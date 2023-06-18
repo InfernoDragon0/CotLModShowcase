@@ -26,7 +26,7 @@
             <NuxtImg src="/images/customroles.png" class="float2 w-32 h-32 opacity-0" />
         </div>
         <div class="w-full flex justify-center">
-            <NuxtImg src="/images/lambritual.gif" class="float4 w-96 h-96" />
+            <NuxtImg  src="/images/lambritual.gif" class="float4 w-96 h-96"/>
         </div>
         <div class="w-full justify-left bg-gradient-to-r from-gray-900 pl-5 pr-5 pt-5 pb-5">
             <h1 class="text-white font-inter text-6xl font-bold">
@@ -34,7 +34,7 @@
                     COTL MINI MODS
                 </span>
             </h1>
-            <h1 class="text-white font-inter text-3xl font-light text-gray-100">BY INFERNODRAGON0</h1>
+            <h1 class="text-white font-inter text-3xl font-light ">BY INFERNODRAGON0</h1>
             <p class="mb-10 font-opensans">Custom Stuff for base management and combat. <br>Click the buttons above to learn more!</p>
 
             <a href="https://www.nexusmods.com/cultofthelamb/mods/12" target="_blank">
@@ -54,6 +54,20 @@
 const { $anime } = useNuxtApp();
 
 onMounted(() => {
+    //animejs fade in on load class float4
+
+    $anime.set(".float4", {
+        opacity: 0,
+    });
+
+    $anime({
+        targets: ".float4",
+        opacity: 1,
+        duration: 1000,
+        easing: "easeInOutSine",
+    });
+
+
     var float1 = $anime.timeline({
         targets: ".float1",
         loop: true,
