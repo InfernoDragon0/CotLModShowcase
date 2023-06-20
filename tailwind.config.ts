@@ -30,6 +30,6 @@ export default <Partial<Config>>{
           },
         ],
       },
-    plugins: [require("daisyui")],
+    plugins: [require("daisyui"),require('tailwind-scrollbar'),],
 
 }

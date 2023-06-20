@@ -1,5 +1,4 @@
 <template>
-    <HeaderComponent />
     <div>
         <!-- coming soon in the center of the entire page-->
         <div class="min-h-[200px] pl-24 pr-24 pt-12 pb-12">
@@ -15,5 +14,4 @@
             </div>
         </div>
     </div>
-    <FooterComponent />
 </template>

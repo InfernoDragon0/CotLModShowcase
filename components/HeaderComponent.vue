@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-900 min-h-[40px] flex justify-center transition">
+    <div class="bg-slate-800 min-h-[40px] flex justify-center transition sticky top-0 w-full z-50">
         <NuxtLink to="/" class="text-white font-inter leading-[36px] pl-5 pr-5">
             <button class="btn btn-sm mt-1 btn-ghost">
                 COTL MODS

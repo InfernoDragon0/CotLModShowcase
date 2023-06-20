@@ -1,25 +1,25 @@
 <template>
     <div
-        class="bg-[url('/images/cotlminimodsbanner.png')] bg-no-repeat bg-cover min-h-[700px] w-full flex justify-center grid auto-rows-max">
+        class="bg-[url('/images/cotlminimodsbanner.png')] bg-no-repeat bg-cover min-h-screen w-full justify-center grid auto-rows-max">
         <div class="w-full grid grid-cols-5 lg:gap-24 place-content-center relative">
-            <NuxtLink to="/minimods/commands" class="float1 w-32 h-32 lg:absolute bottom-[-300px]">
+            <NuxtLink to="/minimods" class="float1 w-32 h-32 lg:absolute bottom-[-300px]">
                 <NuxtImg src="/images/customcomms.png"></NuxtImg>
             </NuxtLink>
 
-            <NuxtLink to="/minimods/structures"
+            <NuxtLink to="/minimods"
                 class="float2 w-32 h-32 lg:absolute bottom-[-200px] left-[200px]">
                 <NuxtImg src="/images/customstruct.png" />
             </NuxtLink>
 
-            <NuxtLink to="/minimods/items" class="z-10 float3 w-32 h-32 lg:absolute bottom-[-110px] left-[450px]">
+            <NuxtLink to="/minimods" class="z-10 float3 w-32 h-32 lg:absolute bottom-[-110px] left-[450px]">
                 <NuxtImg src="/images/customitems.png" />
             </NuxtLink>
 
-            <NuxtLink to="/minimods/rituals" class="float1 w-32 h-32 lg:absolute bottom-[-200px] left-[700px]">
+            <NuxtLink to="/minimods" class="float1 w-32 h-32 lg:absolute bottom-[-200px] left-[700px]">
                 <NuxtImg src="/images/customrituals.png" />
             </NuxtLink>
 
-            <NuxtLink to="/minimods/roles" class="float2 w-32 h-32 lg:absolute bottom-[-300px] left-[950px]">
+            <NuxtLink to="/minimods" class="float2 w-32 h-32 lg:absolute bottom-[-300px] left-[950px]">
                 <NuxtImg src="/images/customroles.png" />
             </NuxtLink>
 
