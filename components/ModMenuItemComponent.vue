@@ -2,9 +2,9 @@
     <li>
         <details>
             <summary>
-                <div class="btn btn-ghost btn-disabled h-[100px] w-[100px]">
-                    <NuxtImg :src="imgsrc" alt="banner" class="object-center"/>
-                    <h2 class="card-title font-inter font-light text-sm">
+                <div class="lg:btn lg:btn-ghost lg:btn-disabled h-[40px] w-[20px] lg:h-[100px] lg:w-[100px]">
+                    <NuxtImg :src="imgsrc" alt="banner" class="hidden lg:block"/>
+                    <h2 class="card-title font-inter font-light text-[8px] lg:text-sm">
                         {{title}}
                     </h2>
                 </div>
