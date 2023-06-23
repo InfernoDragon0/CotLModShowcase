@@ -216,9 +216,9 @@
                 "link": "#ritualfrenzy",
                 "imgsrc": "/images/ritual_frenzy.png",
                 "description": "Resets the cooldown of all your rituals.",
-                "img1": "",
+                "img1": "/images/ritual_frenzy.png",
                 "img2": "/images/Lamb-idle.gif",
-                "img3": "",
+                "img3": "/images/ritual_frenzy.png",
             },
             {
                 "title": "Ritual of Youth",
