@@ -52,102 +52,182 @@
                 "title": "Relic Infuser",
                 "link": "#relicinfuser",
                 "imgsrc": "/images/cauldron.png",
-                "new": "1.2.1"
+                "new": "1.2.1",
+                "description": "Allows you to create and hold relics in the base, and keeps them between runs.",
+                "img1": "",
+                "img2": "/images/cauldron.png",
+                "img3": "",
             },
             {
                 "title": "Lucky Narinder",
                 "link": "#luckynarinder",
-                "imgsrc": "/images/luckynarinder.png"
+                "imgsrc": "/images/luckynarinder.png",
+                "description": "For followers to devote to Narinder.",
+                "img1": "",
+                "img2": "/images/cauldron.png",
+                "img3": "",
             },
             {
                 "title": "AIO Miner",
                 "link": "#aiominer",
-                "imgsrc": "/images/aio.png"
+                "imgsrc": "/images/aio.png",
+                "description": "An AIO mine for a variety of items.",
+                "img1": "",
+                "img2": "/images/aio.png",
+                "img3": "",
             },
             {
                 "title": "AIO Incubator",
                 "link": "#luckynarinder",
-                "imgsrc": "/images/aiofarm.png"
+                "imgsrc": "/images/aiofarm.png",
+                "description": "An AIO mine for all types of seeds.",
+                "img1": "",
+                "img2": "/images/aiofarm.png",
+                "img3": "",
             },
             {
                 "title": "Bone Mines",
                 "link": "#bonemines",
-                "imgsrc": "/images/bonemines.png"
+                "imgsrc": "/images/bonemines.png",
+                "description": "A Mine for Bones.",
+                "img1": "",
+                "img2": "/images/bonemines.png",
+                "img3": "",
             },
             {
                 "title": "Alchemy",
                 "link": "#alchemycauldron",
-                "imgsrc": "/images/cauldron.png"
+                "imgsrc": "/images/cauldron.png",
+                "description": "Creates Necklaces based on your choice.",
+                "img1": "",
+                "img2": "/images/cauldron.png",
+                "img3": "",
             },
             {
                 "title": "Sous Chef Desk",
                 "link": "#souschefdesk",
-                "imgsrc": "/images/chefdesk.png"
+                "imgsrc": "/images/chefdesk.png",
+                "description": "For the Sous Chef to cook. You can select the Signature dish to cook.",
+                "img1": "",
+                "img2": "/images/chefdesk.png",
+                "img3": "",
             },
             {
                 "title": "HR Device",
                 "link": "#followermanagement",
-                "imgsrc": "/images/cotlpc.png"
+                "imgsrc": "/images/cotlpc.png",
+                "description": "Manage your followers remotely.",
+                "img1": "",
+                "img2": "/images/cotlpc.png",
+                "img3": "",
             },
             {
                 "title": "Crystal Mines",
                 "link": "#crystalmines",
-                "imgsrc": "/images/crystalmines.png"
+                "imgsrc": "/images/crystalmines.png",
+                "description": "A Mine for Crystals.",
+                "img1": "",
+                "img2": "/images/crystalmines.png",
+                "img3": "",
             },
             {
                 "title": "Endless Pit",
                 "link": "#endlesspit",
-                "imgsrc": "/images/endlesspit.png"
+                "imgsrc": "/images/endlesspit.png",
+                "description": "Infinite Grave, and also generates Strange Energy per follower inside.",
+                "img1": "",
+                "img2": "/images/endlesspit.png",
+                "img3": "",
             },
             {
                 "title": "Generator",
                 "link": "#strangegenerator",
-                "imgsrc": "/images/generator.png"
+                "imgsrc": "/images/generator.png",
+                "description": "Generates Strange Energy at the cost of gold.",
+                "img1": "",
+                "img2": "/images/generator.png",
+                "img3": "",
             },
             {
                 "title": "Gift Tree",
                 "link": "#gifttree",
-                "imgsrc": "/images/GiftTree.png"
+                "imgsrc": "/images/GiftTree.png",
+                "description": "Followers can generate gifts here.",
+                "img1": "",
+                "img2": "/images/GiftTree.png",
+                "img3": "",
             },
             {
                 "title": "Fishing Hut",
                 "link": "#fishinghut",
-                "imgsrc": "/images/Icon_FishingHut.png"
+                "imgsrc": "/images/Icon_FishingHut.png",
+                "description": "Allows your followers to Fish.",
+                "img1": "",
+                "img2": "/images/Icon_FishingHut.png",
+                "img3": "",
             },
             {
                 "title": "Wishing Well",
                 "link": "#wishingwell",
-                "imgsrc": "/images/Icon_Pond.png"
+                "imgsrc": "/images/Icon_Pond.png",
+                "description": "Allows you to collect Tarot Cards in the base in exchange for gold.",
+                "img1": "",
+                "img2": "/images/Icon_Pond.png",
+                "img3": "",
             },
             {
                 "title": "Silk Mines",
                 "link": "#silkmines",
-                "imgsrc": "/images/silkmines.png"
+                "imgsrc": "/images/silkmines.png",
+                "description": "A Mine for Silk.",
+                "img1": "",
+                "img2": "/images/silkmines.png",
+                "img3": "",
             },
             {
                 "title": "Stasis Chamber",
                 "link": "#stasis",
-                "imgsrc": "/images/stasis.png"
+                "imgsrc": "/images/stasis.png",
+                "description": "Pause the simulation timer using Strange Energy.",
+                "img1": "",
+                "img2": "/images/stasis.png",
+                "img3": "",
             },
             {
                 "title": "Study Table",
                 "link": "#studytable",
-                "imgsrc": "/images/study.png"
+                "imgsrc": "/images/study.png",
+                "description": "For followers to study for Experience.",
+                "img1": "",
+                "img2": "/images/study.png",
+                "img3": "",
             },
             {
                 "title": "Telescope",
                 "link": "#telescope",
-                "imgsrc": "/images/telescope.png"
+                "imgsrc": "/images/telescope.png",
+                "description": "For Astrologer Role.",
+                "img1": "",
+                "img2": "/images/telescope.png",
+                "img3": "",
             },
             {
                 "title": "Waiter Desk",
                 "link": "#waiterdesk",
-                "imgsrc": "/images/waiterdesk.png"
+                "imgsrc": "/images/waiterdesk.png",
+                "description": "For followers to serve food.",
+                "img1": "",
+                "img2": "/images/waiterdesk.png",
+                "img3": "",
             },
             {
                 "title": "Wireless Energy",
                 "link": "#wireless",
-                "imgsrc": "/images/wireless.png"
+                "imgsrc": "/images/wireless.png",
+                "description": "Transfers wireless energy for structures that require it.",
+                "img1": "",
+                "img2": "/images/wireless.png",
+                "img3": "",
             },
         ],
         "items": [
@@ -255,42 +335,74 @@
                 "title": "Sous Chef",
                 "link": "#souschef",
                 "imgsrc": "/images/comingsoon2.gif",
-                "new": "1.2.1"
+                "new": "1.2.1",
+                "description": "Cooks food automatically when there are hungry followers. Must have Sous Chef Desk.",
+                "img1": "/images/comingsoon2.gif",
+                "img2": "",
+                "img3": "",
             },
             {
                 "title": "Waiter",
                 "link": "#waiter",
-                "imgsrc": "/images/comingsoon2.gif"
+                "imgsrc": "/images/comingsoon2.gif",
+                "description": "Brings food to followers. Must have Waiter Desk",
+                "img1": "/images/comingsoon2.gif",
+                "img2": "",
+                "img3": "",
             },
             {
                 "title": "Narinder",
                 "link": "#narinder",
-                "imgsrc": "/images/comingsoon2.gif"
+                "imgsrc": "/images/comingsoon2.gif",
+                "description": "Devotes to narinder for levels. Must have Lucky Narinder Statue.",
+                "img1": "/images/comingsoon2.gif",
+                "img2": "",
+                "img3": "",
             },
             {
                 "title": "Astrologer",
                 "link": "#astrologer",
-                "imgsrc": "/images/comingsoon2.gif"
+                "imgsrc": "/images/comingsoon2.gif",
+                "description": "See the stars to drop Strange Material. Must have Telescope",
+                "img1": "/images/comingsoon2.gif",
+                "img2": "",
+                "img3": "",
             },
             {
                 "title": "Study",
                 "link": "#study",
-                "imgsrc": "/images/comingsoon2.gif"
+                "imgsrc": "/images/comingsoon2.gif",
+                "description": "Studies the Strange Material for Experience. Must have Study Table.",
+                "img1": "/images/comingsoon2.gif",
+                "img2": "",
+                "img3": "",
             },
             {
                 "title": "Reaper",
                 "link": "#reaper",
-                "imgsrc": "/images/comingsoon2.gif"
+                "imgsrc": "/images/comingsoon2.gif",
+                "description": "Automatically sweeps up corpse and drops into Endless Pit. Must have Endless Pit",
+                "img1": "/images/comingsoon2.gif",
+                "img2": "",
+                "img3": "",
             },
             {
                 "title": "Mining",
                 "link": "#mining",
-                "imgsrc": "/images/comingsoon2.gif"
+                "imgsrc": "/images/comingsoon2.gif",
+                "description": "Mines for custom structures such as AIO Miner. Must have the corresponding structure.",
+                "img1": "/images/comingsoon2.gif",
+                "img2": "",
+                "img3": "",
             },
             {
                 "title": "Fishing",
                 "link": "#fishing",
-                "imgsrc": "/images/comingsoon2.gif"
+                "imgsrc": "/images/comingsoon2.gif",
+                "description": "Fishes from a different loot pool with all the seafood types. Must have Fishing Hut.",
+                "img1": "/images/comingsoon2.gif",
+                "img2": "",
+                "img3": "",
             },
             
             
