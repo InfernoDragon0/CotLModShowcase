@@ -29,8 +29,8 @@
                 <li 
                     :aria-current="currentCard === card.number"
                     @click="() => {currentCard = card.number}"
-                    class="overflow-hidden h-[400px] w-[50px] card bg-base-100 image-full glass hover:w-[75px] transition-all duration-[300ms] ease-in-out [&[aria-current='true']]:w-[400px]">
-                    <figure><img src="/images/comingsoon.gif" alt="tarot"/></figure>
+                    class="overflow-hidden h-[400px] w-[50px] card bg-base-100 image-full glass hover:w-[75px] transition-all duration-[300ms] ease-in-out [&[aria-current='true']]:w-[250px]">
+                    <figure><img :src="card.image" alt="tarot"/></figure>
                     <div v-if="currentCard === card.number" class="card-body">
                         <p class="card-title">{{card.name}}</p>
                         <p>{{ card.description }}</p>
@@ -49,61 +49,61 @@
         "card1": {
             "name": "Shadow Quiver",
             "description": "Near Infinite Curse Casting",
-            "image": "test",
+            "image": "/images/tarot_arrow.png",
             "number": 0
         },
         "card2": {
             "name": "Deadeye",
             "description": "Always Crit",
-            "image": "test",
+            "image": "/images/tarot_true.png",
             "number": 1
         },
         "card3": {
             "name": "Supernova",
             "description": "300% more Curse Damage",
-            "image": "test",
+            "image": "/images/tarot_death.png",
             "number": 2
         },
         "card4": {
             "name": "Ruinous Strike",
             "description": "100% more Damage",
-            "image": "test",
+            "image": "/images/tarot_solunar.png",
             "number": 3
         },
         "card5": {
             "name": "Ace of Hearts",
             "description": "Grants you 10 Black Hearts",
-            "image": "test",
+            "image": "/images/tarot_hearts.png",
             "number": 4
         },
         "card6": {
             "name": "Curse Perfected",
             "description": "Always Perfect Curse Casting (for curses that require charging, releases perfectly at any time.)",
-            "image": "test",
+            "image": "/images/tarot_arrow.png",
             "number": 5
         },
         "card7": {
             "name": "Speedrunner",
             "description": "4x Movement Speed",
-            "image": "test",
+            "image": "/images/tarot_shoes.png",
             "number": 6
         },
         "card8": {
             "name": "Sonic Surge",
             "description": "5x Attack Speed",
-            "image": "test",
+            "image": "/images/tarot_attack.png",
             "number": 7
         },
         "card9": {
             "name": "The Solunar Eclipse",
             "description": "200% more Damage during the day, 300% more Damage during the night",
-            "image": "test",
+            "image": "/images/tarot_eyes.png",
             "number": 8
         },
         "card10": {
             "name": "Relic Overdrive",
             "description": "30x Relic Charge Speed",
-            "image": "test",
+            "image": "/images/tarot_relic.png",
             "number": 9
         },
     }
