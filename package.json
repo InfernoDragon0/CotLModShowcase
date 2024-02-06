@@ -14,11 +14,12 @@
     "@nuxt/image": "^1.0.0-rc.1",
     "@nuxtjs/tailwindcss": "^6.7.0",
     "@types/node": "^18",
-    "daisyui": "^3.1.0",
+    "daisyui": "^4.6.1",
     "nuxt": "^3.5.2",
     "tailwind-scrollbar": "^3.0.4"
   },
   "dependencies": {
-    "@vercel/analytics": "^1.0.1"
+    "@vercel/analytics": "^1.0.1",
+    "vue-advanced-cropper": "^2.8.8"
   }
 }

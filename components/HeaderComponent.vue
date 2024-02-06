@@ -5,6 +5,11 @@
                 COTL MODS
             </button>
         </NuxtLink>
+        <NuxtLink to="/builder" class="font-inter leading-[36px] pl-5 pr-5">
+            <button class="btn btn-sm mt-1 btn-ghost">
+                Skin Builder
+            </button>
+        </NuxtLink>
         <a href="https://github.com/InfernoDragon0" class="font-inter leading-[36px] pl-5 pr-5">
             <button class="btn btn-sm mt-1 btn-ghost">
                 Github
