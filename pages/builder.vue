@@ -55,6 +55,7 @@
                                 <div class="flex flex-col w-[40%] space-y-2">
                                     <h2 class="text-2xl text-gray-800 font-bold">Skin Preview</h2>
                                     <p class="text-sm text-gray-800">Animation Preview (Note: custom skin preview is not implemented yet)</p>
+                                    <p class="text-sm text-gray-800">Note: this is a WORK IN PROGRESS, IGNORE THIS SECTION</p>
                                 </div>
                                 <div class="flex flex-1">
                                     <SpineComponent/>
