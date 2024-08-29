@@ -52,15 +52,12 @@
 
                             <!-- Spine Preview Section -->
                              <div class="flex py-4 justify-between">
-                                <div class="flex flex-col w-[60%] space-y-2">
+                                <div class="flex flex-col w-[40%] space-y-2">
                                     <h2 class="text-2xl text-gray-800 font-bold">Skin Preview</h2>
-                                    <p class="text-sm text-gray-800">Animation Preview</p>
-                                    <USelectMenu v-model="skinSelectedProps" :options="skinProps" option-attribute="name" searchable></USelectMenu>
-                                    <UCheckbox color="black" v-model="showOverrideSlotOnly" name="showOverrideSlotOnly" label="Show Override Slot Only" />
-                                    <UCheckbox color="black" v-model="showOriginalSprite" name="showOriginalSprite" label="Show Original Sprite" />
+                                    <p class="text-sm text-gray-800">Animation Preview (Note: custom skin preview is not implemented yet)</p>
                                 </div>
-                                <div class="flex">
-                                    <NuxtImg src="/images/Follower-idle.gif" class="w-auto h-[200px]"/>
+                                <div class="flex flex-1">
+                                    <SpineComponent/>
                                 </div>
                             
                             </div>
@@ -166,7 +163,7 @@
                                     <p class="text-gray-500 pb-2">Updating Override for <span class="font-bold text-info">{{ currentSelectedOverrideProps }}</span></p>
                                 </template>
                                 <template v-else>
-                                    <p class="text-sm text-red-500 pb-2">Select an override slot above to start editing</p>
+                                    <p class="text-sm text-red-500 pb-2">Select an override slot to start editing</p>
                                 </template>
                                 <div class="flex py-2">
                                 <UCard class="w-fit">
@@ -248,6 +245,7 @@
                 <div class="w-full h-full bg-zinc-200">
                     <div class="w-full h-full flex flex-col items-center justify-center space-y-4">
                         <NuxtImg src="/images/Follower-fishing-fishing.gif" class="w-auto h-32"/>
+
                         <p class="text-gray-400">CotL Skin Builder by InfernoDragon0</p>
                         <p class="text-gray-500 text-2xl">Select or create a skin to start editing</p>
                         <div class="flex space-x-2 w-[400px]">
@@ -1097,15 +1095,30 @@ const baseOutputData = ref({
 
 const finalOutput = ref({});
 
+useHead({
+        title: 'CotL Skin Builder by InfernoDragon0',
+        link: [
+            {
+                rel: 'stylesheet',
+                href: '/spine-player.css'
+            }
+        ],
+        script: [
+          {
+            src: "/spine-player.js",
+          }
+        ]
+    })
+
 onMounted(() => {
     //load from storage
     const skinPropsStorage = localStorage.getItem('skinProps');
     if (skinPropsStorage) {
         skinProps.value = JSON.parse(skinPropsStorage);
     }
-
-    
 });
+
+
 
 //watchers
 watch(()=> scaleProps.value.scaleX, (newVal, oldVal) => {

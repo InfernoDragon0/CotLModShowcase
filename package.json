@@ -20,6 +20,8 @@
     "tailwind-scrollbar": "^3.0.4"
   },
   "dependencies": {
+    "@esotericsoftware/spine-core": "^4.2.58",
+    "@esotericsoftware/spine-player": "^4.2.58",
     "@vercel/analytics": "^1.0.1",
     "vue-advanced-cropper": "^2.8.8"
   }
