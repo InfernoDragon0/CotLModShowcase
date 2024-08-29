@@ -2,274 +2,276 @@
     <HeaderComponent />
     <div class="flex justify-center h-screen w-full items-center">
         <div class=" w-screen h-screen bg-white flex">
-                <!-- Side Panel -->
-                <!-- <div class="w-1/3 bg-zinc-800 relative max-w-[600px]">
-                    
-                    <div class="p-6 bg-slate-900">
-                        <h3 class="text-xl font-bold font-inter">Skins</h3>
-                        <p class="text-gray-500 font-inter">Stores a list of your previously built skins here</p>
-                        <p onclick="installTutorialModal.showModal()" class="text-blue-500 font-inter"><a href="#">How to Add Skin into Game</a></p> 
-                    </div>
-                    <div class="tooltip tooltip-left absolute top-4 right-4" onclick="createSkinModal.showModal()" data-tip="Create a new Skin">
-                        <button class="btn btn-primary btn-circle w-12 h-12">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                    </button>
-                    </div>
-                    
-                    
-
-                    <div class="bg-slate-700">
-                        <ul>
-                            <template v-for="skin in skinProps" :key="skin">
-                                <li @click="()=> selectSkin(skin)" class="text-gray-100 hover:bg-gray-500 w-full  bg-slate-600 flex items-center px-6 py-2">
-                                    <div>
-                                        <h3 class="text-md font-inter">{{skin.name}}</h3>
-                                        <p class="text-gray-400 text-sm font-inter">{{skin.type}}</p>
-                                    </div>
-                                </li>
-                            </template>
-                            
-                        </ul>
-                    </div>
-                </div> -->
-                <template v-if="skinSelectedProps != ''">
-                    <div class="h-full w-full flex-1 bg-zinc-200">
-                        <!-- Content -->
-                        <div class="w-full h-full flex flex-1">
-                            
-                            <div class="w-1/3 h-full bg-zinc-300 p-4 flex flex-col overflow-auto">
-                                <div class="flex space-x-2 pb-2">
-                                    <h2 class="text-lg text-gray-500 font-bold">Skin Select</h2>
-                                    <UButton onclick="installTutorialModal.showModal()" class="" variant="ghost" color="blue">How to Install Skin</UButton>
-                                </div>
-                                <div class="flex w-full space-x-2">
-                                    <USelectMenu class="flex-1" v-model="skinSelectedProps" :options="skinProps" option-attribute="name" searchable>
-                                        <template #label>
-                                            <span v-if="skinSelectedProps != ''" class=" line-clamp-1">{{ skinSelectedProps.name }} <span class="text-xs font-normal text-gray-500">- {{ skinSelectedProps.type }}</span></span>
-                                            <span v-else>Select a Skin</span>
-                                        </template>
-                                        <template #option="{ option: skin }">
-                                            <div class="flex place-items-center space-x-2">
-                                                <NuxtImg :src="skin.type == 'Follower Skin' ? '/images/Follower-avatars-avatar-normal.png' : '/images/Lamb-idle-still.png'" class="w-auto h-[32px]"/> 
-                                            <span class="line-clamp-1">{{ skin.name }}</span> 
-                                                <span class="text-sm place-items-center font-normal text-gray-500 line-clamp-1">--- {{ skin.type }}</span>
-                                                
-                                            </div>
-                                        </template>
-                                    </USelectMenu>
-                                    <UButton onclick="createSkinModal.showModal()" class="bg-slate-700 hover:bg-slate-500">New Skin</UButton>
-                                </div>
-                                <div class="flex space-x-2 my-2 overflow-auto">
-                                    <div class="flex place-items-center space-x-2 p-2 bg-slate-200 rounded-lg min-w-[180px]">
-                                        <NuxtImg :src="skinSelectedProps.type == 'Follower Skin' ? '/images/Follower-avatars-avatar-normal.png' : '/images/Lamb-idle-still.png'" class="w-[32px] h-[32px]"/> 
-                                        
-                                        <span class="text-xs font-normal text-gray-500 line-clamp-1">Custom {{ skinSelectedProps.type }}</span>
-                                    </div>
-                                    <UButton @click="openFileSelect" icon="i-heroicons-photo-16-solid" class="" color="gray" variant="ghost" >Upload Spritesheet</UButton>
-                                </div>  
-                                <div class="flex flex-row place-items-center space-x-2">
-                                    
-                                    
-                                </div>
-                                <p class="text-gray-500 text-sm mb-4">Upload your skin spritesheet and add override slots for each part you want your skin to apply to.</p>
-
-                                <template v-if="'imgsrc' in skinSelectedProps">
-                                    <!-- <div class="w-full">
-                                        <details class="dropdown w-[500px]" id="overrideselectbox">
-                                            <summary class="btn w-full">Add an override slot</summary>
-                                            <ul class="my-2 p-2 menu dropdown-content z-[1] bg-gray-100 shadow-lg rounded-box w-[800px] max-h-[400px] overflow-auto">
-                                                <template v-if="skinSelectedProps.type === 'Follower Skin'">
-                                                    <template v-for="slot in defaultSkinSlotsProps" :key="slot">
-                                                        <li @click="()=> addOverride(slot)" class="hover:bg-zinc-200 text-gray-800"><a>{{slot}}</a></li>
-                                                    </template>
-                                                </template>
-                                                <template v-else>
-                                                    <template v-for="slot in defaultLambSkinSlotsProps" :key="slot">
-                                                        <li @click="()=> addOverride(slot)" class="hover:bg-zinc-200 text-gray-800"><a>{{slot}}</a></li>
-                                                    </template>
-                                                </template>
-                                            </ul>
-                                        </details>
-                                    </div> -->
-                                    <h2 class="text-lg text-gray-500 font-bold py-2">Overrides
-                                        <span 
-                                        class="tooltip text-sm font-normal tooltip-right inline-block ml-2 text-blue-600 cursor-pointer" 
-                                        @click="openModal"
-                                        data-tip="Once you have added override slots, select the slot you want to edit, and then in the image preview, drag to select parts of the image to apply to that override slot.">
-                                        How to use
-                                    </span>
-                                    </h2>
-                                    
-                                    <div class="flex space-x-2 pb-4">
-                                        <template v-if="skinSelectedProps.type === 'Follower Skin'">
-                                            <UInputMenu class="flex-1" v-model="vmodelOverrideSelected" :options="defaultSkinSlotsProps" placeholder="Add an Override Slot"/>
-                                        </template>
-                                        <template v-else>
-                                            <UInputMenu v-model="vmodelOverrideLambSelected" :options="defaultLambSkinSlotsProps" placeholder="Add an Override Slot"/>
-                                        </template>
-                                        <UButton onclick="overridePresetsModal.showModal()" icon="i-heroicons-plus-circle-16-solid" class="" color="gray" variant="ghost">Override Presets</UButton>
-                                    </div>
-                                    <p class="text-gray-500 text-sm mb-4 font-inter">
-                                        Note: Mini-previews are fixed aspect ratio (1:1) and may not accurately depict the actual selected region.
-                                        <span class="text-blue-600"><a href="https://cotl-api.vercel.app/reference/skins/" target="_blank">Slot Reference</a></span>
-                                    </p>
-                                    <div class="max-h-[400px] overflow-auto">
-                                        <ul>
-                                            <template v-for="overrideData in skinSelectedProps.overrides" :key="overrideData">
-                                                <li @click="()=> selectOverride(overrideData.name)" :class="currentSelectedOverrideProps == overrideData.name ? 'bg-slate-100' : ''" class="text-gray-800 hover:bg-zinc-200 w-full flex items-center py-2 justify-between">
-                                                    <div class="flex items-center">
-                                                        <template v-if="overrideData.coordinates"> 
-                                                            <div class="w-16 h-16 mx-2">
-                                                                <preview
-                                                                    :width="64"
-                                                                    :height="64"
-                                                                    :image="skinSelectedProps.previewData"
-                                                                    :coordinates="overrideData.coordinates"
-                                                                />
-                                                            </div>
-                                                        </template>
-                                                        <template v-else>
-                                                            <img src="https://placehold.co/150x150" class="w-16 h-16 mx-2" alt="Head Eye Left"/>
-                                                        </template>
-
-                                                        <div>
-                                                            <h3 class="text-md">{{overrideData.name}}</h3>
-                                                            <p class="text-gray-400 text-sm">X: {{overrideData.x}}, Y: {{overrideData.y}}, W: {{overrideData.w}}, H:{{overrideData.h}}, ScaleX:{{overrideData.scaleX}}, ScaleY:{{overrideData.scaleY}}</p>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="p-4">
-                                                        <button @click="() => removeOverride(overrideData.name)" class="btn btn-ghost text-red-500">Delete</button>
-                                                    </div>
-                                                </li>
-                                            </template>
-                                        </ul>
-                                    </div>
-
-                                    <h2 class="text-lg text-gray-500 font-bold py-4">Color</h2>
-                                    <p class="text-gray-500 text-sm mb-4 font-inter">You can add color to the override slots, this will apply a color overlay to the selected area of the skin. Currently, only supports one color and applies to all overrides.</p>
-                                    <input v-model="colorInitial" type="color" class="h-12" />
-
-                                    <div class="flex space-x-4 justify-end">
-                                        <button onclick="deleteSkinModal.showModal()" class="btn btn-ghost text-red-500 w-32 h-12">Delete Skin</button>
-                                        <button @click="downloadSkin" class="btn btn-success w-64 h-12">Download Skin</button>
-                                    </div>
-                                </template>
-                                <template v-else>
-                                    <div class="w-full h-full flex items-center justify-center">
-                                        <p class="text-gray-500 text-2xl">Upload a skin on the right to start overriding</p>
-                                    </div>
-                                </template>
-                                
-                                
-                            </div>
-                            <div class="flex flex-col w-2/3 flex-1 bg-zinc-200 pr-12">
-                                <h2 class="text-lg text-gray-500 p-4">
-                                    <span class="text-lg font-bold">Image Preview: </span>
-                                    <span class="text-gray-400">Scroll to Zoom. Select the area to use as overrides.</span>
-                                    <span 
-                                        class="tooltip tooltip-bottom inline-block ml-2 text-gray-800 cursor-pointer" 
-                                        @click="openModal"
-                                        data-tip="PNG format, any size. Ensure that it has true transparency (some image editors such as CSP may produce white instead). WARNING: Skin data is stored locally! If you clear the cache of this site, you will need to redo everything.">
-                                        ?
-                                    </span>
-                                </h2>
-                                <template v-if="currentSelectedOverrideProps.length > 0">
-                                    <p class="px-4 text-sm text-gray-500 pb-2">Updating Override for <span class="font-bold">{{ currentSelectedOverrideProps }}</span></p>
-                                </template>
-                                <template v-else>
-                                    <p class="px-4 text-sm text-red-500 pb-2">Select an override slot on the left to start editing</p>
-                                </template>
-                                <div class="w-full flex px-4 flex-col overflow-auto">
-                                    <div class="flex-1 bg-black max-h-[75%]">
-                                    <cropper 
-                                        ref="cropperElement"
-                                        id="skinImage"
-                                        :canvas="{fillcolor: '#ffffff00'}" 
-                                        class="" 
-                                        background-class="cropper__background"
-                                        :src="skinSelectedProps.imgsrc"
-                                        :stencil-props="{
-                                        }"
-                                        @change="change"
-                                        :debounce="true"
-                                        />
-                                    </div>
-                                
-                                    <div class="flex justify-end px-4 py-2">
-                                        <input type="file" class="hidden" id="file" accept="image/png" @change="fileSelected" />
-                                        <!-- <button class="btn btn-ghost text-blue-600  mx-4" @click="openFileSelect">Upload Skin Image</button> -->
-                                    </div>
-                                    
-                                    <div class="flex">
-                                        <div class="flex p-4 items-center">
-                                            <p class="text-gray-800 p-2">X:</p>
-                                            <input v-model="dataProps.x" type="text" class="input w-24 h-8 bg-white text-black" placeholder="X Start" />
-                                        </div>
-                                        <div class="flex p-4 items-center">
-                                            <p class="text-gray-800 p-2">W:</p>
-                                            <input v-model="dataProps.w" type="text" class="input w-24 h-8 bg-white text-black" placeholder="Width" />
-                                        </div>
-                                        <div class="flex p-4 items-center">
-                                            <p class="text-gray-800 p-2">sX:</p>
-                                            <input v-model="scaleProps.scaleX" type="text" class="input w-24 h-8 bg-white text-black" placeholder="ScaleX" />
-                                        </div>
-                                    </div>
-                                    <div class="flex">
-                                        <div class="flex p-4 items-center">
-                                            <p class="text-gray-800 p-2">Y:</p>
-                                            <input v-model="dataProps.y" type="text" class="input w-24 h-8 bg-white text-black" placeholder="Y Start" />
-                                        </div>
-                                        <div class="flex p-4 items-center">
-                                            <p class="text-gray-800 p-2">H:</p>
-                                            <input v-model="dataProps.h" type="text" class="input w-24 h-8 bg-white text-black" placeholder="Height" />
-                                        </div>
-                                        <div class="flex p-4 items-center">
-                                            <p class="text-gray-800 p-2">sY:</p>
-                                            <input v-model="scaleProps.scaleY" type="text" class="input w-24 h-8 bg-white text-black" placeholder="ScaleY" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                
-
-                                
-                            </div>
-                        </div>
-
+            <template v-if="skinSelectedProps != ''">
+                <div class="h-full w-full flex-1 bg-zinc-200">
+                    <!-- Content -->
+                    <div class="w-full h-full flex flex-1">
                         
-                    </div>
-                </template>
-                <template v-else>
-                    <div class="w-full h-full bg-zinc-200">
-                        <div class="w-full h-full flex flex-col items-center justify-center space-y-4">
-                            <NuxtImg src="/images/Follower-fishing-fishing.gif" class="w-auto h-32"/>
-                            <p class="text-gray-400">CotL Skin Builder by InfernoDragon0</p>
-                            <p class="text-gray-500 text-2xl">Select or create a skin to start editing</p>
-                            <div class="flex space-x-2 w-[400px]">
-                                <USelectMenu class="flex-1" v-model="skinSelectedProps" :options="skinProps" option-attribute="name" searchable>
+                        <div class="w-1/3 h-full bg-zinc-300 p-4 flex flex-col overflow-auto">
+                            <!-- Intro Section -->
+                            <div class="flex space-x-2 pb-2 justify-between place-items-center">
+                                <div class="flex flex-col">
+                                    <h2 class="text-2xl text-gray-800 font-bold">Skin Builder</h2>
+                                    <h2 class="text-sm text-gray-800">By InfernoDragon0</h2>
+                                </div>
+                                <div class="flex h-fit space-x-2">
+                                    <UButton @click="openFileSelect" icon="i-heroicons-photo-16-solid" class="" color="black" >Upload Spritesheet</UButton>
+                                    <UButton onclick="installTutorialModal.showModal()" class="" variant="soft" color="blue">How-to Guide</UButton>
+                                </div>
+                                
+                            </div>
+                            <!-- End Intro Section-->
+
+                            <!-- Skin Selection Section -->
+                            <div class="flex w-full pt-2 space-x-2">
+                                <USelectMenu class="flex-1" size="md" v-model="skinSelectedProps" :options="skinProps" option-attribute="name" searchable>
                                     <template #label>
-                                        <span v-if="skinSelectedProps != ''" class="">{{ skinSelectedProps.name }} <span class="text-xs font-normal text-gray-500">- {{ skinSelectedProps.type }}</span></span>
+                                        <div v-if="skinSelectedProps != ''">
+                                            <div class="flex place-items-center space-x-2">
+                                                <NuxtImg :src="skinSelectedProps.type == 'Follower Skin' ? '/images/Follower-avatars-avatar-normal.png' : '/images/Lamb-idle-still.png'" class="w-auto h-[32px]"/> 
+                                            <span class="line-clamp-1">{{ skinSelectedProps.name }}</span> 
+                                                <span class="text-sm place-items-center font-normal text-gray-500 line-clamp-1">- {{ skinSelectedProps.type }}</span>
+                                            </div>
+                                        </div>
                                         <span v-else>Select a Skin</span>
                                     </template>
                                     <template #option="{ option: skin }">
                                         <div class="flex place-items-center space-x-2">
                                             <NuxtImg :src="skin.type == 'Follower Skin' ? '/images/Follower-avatars-avatar-normal.png' : '/images/Lamb-idle-still.png'" class="w-auto h-[32px]"/> 
-                                            <span class="line-clamp-1 text-ellipsis">{{ skin.name }}</span> 
+                                        <span class="line-clamp-1">{{ skin.name }}</span> 
                                             <span class="text-sm place-items-center font-normal text-gray-500 line-clamp-1">--- {{ skin.type }}</span>
-                                            
                                         </div>
                                     </template>
                                 </USelectMenu>
                                 <UButton onclick="createSkinModal.showModal()" class="bg-slate-700 hover:bg-slate-500">New Skin</UButton>
                             </div>
+                            <!-- End Skin Selection Section-->
+                            <UDivider class="mt-4" size="sm" 
+                            :ui="{border: { base: 'flex border-gray-500 dark:border-gray-800'}}"
+                            />
+
+                            <!-- Spine Preview Section -->
+                             <div class="flex py-4 justify-between">
+                                <div class="flex flex-col w-[60%] space-y-2">
+                                    <h2 class="text-2xl text-gray-800 font-bold">Skin Preview</h2>
+                                    <p class="text-sm text-gray-800">Animation Preview</p>
+                                    <USelectMenu v-model="skinSelectedProps" :options="skinProps" option-attribute="name" searchable></USelectMenu>
+                                    <UCheckbox color="black" v-model="showOverrideSlotOnly" name="showOverrideSlotOnly" label="Show Override Slot Only" />
+                                    <UCheckbox color="black" v-model="showOriginalSprite" name="showOriginalSprite" label="Show Original Sprite" />
+                                </div>
+                                <div class="flex">
+                                    <NuxtImg src="/images/Follower-idle.gif" class="w-auto h-[200px]"/>
+                                </div>
+                            
+                            </div>
+                            <!-- End Spine Preview Section -->
+
+                            <UDivider class="mt-4" size="sm" 
+                                :ui="{border: { base: 'flex border-gray-500 dark:border-gray-800'}}"
+                             />
+                            
+                            <!-- Skin Overrides Section -->
+                            <template v-if="'imgsrc' in skinSelectedProps">
+                                <h2 class="text-2xl text-gray-800 font-bold py-2">Skin Overrides</h2>
+                                <p class="text-lg text-gray-800 py-2">Override Slots</p>
+                                
+                                <div class="flex space-x-2 pb-4">
+                                    <template v-if="skinSelectedProps.type === 'Follower Skin'">
+                                        <UInputMenu class="flex-1" v-model="vmodelOverrideSelected" :options="defaultSkinSlotsProps" placeholder="Add an Override Slot"/>
+                                    </template>
+                                    <template v-else>
+                                        <UInputMenu v-model="vmodelOverrideLambSelected" :options="defaultLambSkinSlotsProps" placeholder="Add an Override Slot"/>
+                                    </template>
+                                    <UButton onclick="overridePresetsModal.showModal()" icon="i-heroicons-plus-circle-16-solid" class="" color="gray" variant="ghost">Override Presets</UButton>
+                                </div>
+                                
+                                <!-- Override Slots Section -->
+                                <div class="min-h-[100px] mb-4 overflow-auto flex flex-1">
+                                    <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 p-2 overflow-ellipsis">
+                                        <template v-for="overrideData in skinSelectedProps.overrides" :key="overrideData">
+                                            <li @click="()=> selectOverride(overrideData.name)" :class="currentSelectedOverrideProps == overrideData.name ? 'bg-info' : 'bg-gray-400'" class="text-gray-800 hover:bg-zinc-200 h-[100px] min-w-[100px] grid items-center p-2 justify-between rounded-md overflow-hidden">
+                                                <div class="flex flex-col items-center col-start-1 row-start-1">
+                                                    <template v-if="overrideData.coordinates"> 
+                                                        <div class="w-16 h-16 mx-2">
+                                                            <preview
+                                                                :width="64"
+                                                                :height="64"
+                                                                :image="skinSelectedProps.previewData"
+                                                                :coordinates="overrideData.coordinates"
+                                                            />
+                                                        </div>
+                                                    </template>
+                                                    <template v-else>
+                                                        <img src="https://placehold.co/150x150" class="w-16 h-16 mx-2" alt="Head Eye Left"/>
+                                                    </template>
+                                                    
+                                                    <h3 class="text-sm font-bold line-clamp-1 w-[95px]">{{overrideData.name}}</h3>
+                                                    
+                                                </div>
+                                                
+                                                <div class="h-full w-full relative top-0 col-start-1 row-start-1 z-10" :class="currentSelectedOverrideProps == overrideData.name ? '': 'hidden'">
+                                                    <UButton icon="i-heroicons-trash-16-solid" color="red" variant="soft" @click="() => removeOverride(overrideData.name)"></UButton>
+                                                </div>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+
+                                <!-- End Override Slots Section -->
+
+                                
+                                <!-- Output Section -->
+                                <div class="flex space-x-4 justify-end">
+                                    <button onclick="deleteSkinModal.showModal()" class="btn btn-ghost text-red-500 w-32 h-12">Delete Skin</button>
+                                    <button @click="downloadSkin" class="btn btn-success w-64 h-12">Download Skin</button>
+                                </div>
+                                <!-- End Output Section -->
+
+                            </template>
+
+                            <template v-else>
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <p class="text-gray-500 text-2xl">Upload a skin on the right to start overriding</p>
+                                </div>
+                            </template>
+                            
+                            
+                        </div>
+                        <div class="flex flex-col w-2/3 flex-1 bg-zinc-200">
+                            <div class="w-full flex px-4 flex-col overflow-auto">
+                                <div class="flex-1 bg-black max-h-[75%]">
+                                <cropper 
+                                    ref="cropperElement"
+                                    id="skinImage"
+                                    :canvas="{fillcolor: '#ffffff00'}" 
+                                    class="" 
+                                    background-class="cropper__background"
+                                    :src="skinSelectedProps.imgsrc"
+                                    :stencil-props="{
+                                    }"
+                                    @change="change"
+                                    :debounce="true"
+                                    />
+                                </div>
+                            
+                                <div class="flex justify-end px-4 py-2">
+                                    <input type="file" class="hidden" id="file" accept="image/png" @change="fileSelected" />
+                                    <!-- <button class="btn btn-ghost text-blue-600  mx-4" @click="openFileSelect">Upload Skin Image</button> -->
+                                </div>
+
+                                <!-- Override Slot Editor Section -->
+
+                                <h2 class="text-2xl text-gray-800 py-4 font-bold">Override Slot Editor</h2>
+                                <template v-if="currentSelectedOverrideProps.length > 0">
+                                    <p class="text-gray-500 pb-2">Updating Override for <span class="font-bold text-info">{{ currentSelectedOverrideProps }}</span></p>
+                                </template>
+                                <template v-else>
+                                    <p class="text-sm text-red-500 pb-2">Select an override slot above to start editing</p>
+                                </template>
+                                <div class="flex py-2">
+                                <UCard class="w-fit">
+                                    <template #header>
+                                        <p class="text-gray-800 font-bold">Override Position & Scale</p>
+                                    </template>
+                                    <div class="flex">
+                                        <div class="flex p-2 items-center">
+                                            <UInput v-model="dataProps.x" type="number" class="w-24 h-8  text-black" placeholder="X Start">
+                                                <template #leading>
+                                                    <span class="text-gray-500 dark:text-gray-400 text-xs">X</span>
+                                                </template>
+                                            </UInput>
+                                        </div>
+                                        <div class="flex p-2 items-center">
+                                            <UInput v-model="dataProps.w" type="number" class="w-24 h-8  text-black" placeholder="Width">
+                                                <template #leading>
+                                                    <span class="text-gray-500 dark:text-gray-400 text-xs">W</span>
+                                                </template>
+                                            </UInput>
+                                        </div>
+                                        <div class="flex p-2 items-center">
+                                            <UInput v-model="scaleProps.scaleX" type="number" class="w-24 h-8  text-black" placeholder="ScaleX">
+                                                <template #leading>
+                                                    <span class="text-gray-500 dark:text-gray-400 text-xs">sX</span>
+                                                </template>
+                                            </UInput>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="flex p-2 items-center">
+                                            <UInput v-model="dataProps.y" type="number" class="w-24 h-8  text-black" placeholder="Y Start">
+                                                <template #leading>
+                                                    <span class="text-gray-500 dark:text-gray-400 text-xs">Y</span>
+                                                </template>
+                                            </UInput>
+                                        </div>
+                                        <div class="flex p-2 items-center">
+                                            <UInput v-model="dataProps.h" type="number" class="w-24 h-8  text-black" placeholder="Height">
+                                                <template #leading>
+                                                    <span class="text-gray-500 dark:text-gray-400 text-xs">H</span>
+                                                </template>
+                                            </UInput>
+                                        </div>
+                                        <div class="flex p-2 items-center">
+                                            <UInput v-model="scaleProps.scaleY" type="number" class="w-24 h-8  text-black" placeholder="ScaleY">
+                                                <template #leading>
+                                                    <span class="text-gray-500 dark:text-gray-400 text-xs">sY</span>
+                                                </template>
+                                            </UInput>
+                                        </div>
+                                    </div>
+                                </UCard>
+                                <UCard class="w-fit mx-4">
+                                    <template #header>
+                                        <p class="text-gray-800 font-bold">Override Color</p>
+                                    </template>
+                                    <input v-model="colorInitial" type="color" class="w-full" />
+                                </UCard>
+                            </div>
+
+
+                                <!-- End Override Slot Editor Section -->
+
+                                
+                                
+                            </div>
+
+                            
+
+                            
                         </div>
                     </div>
-                </template>
-                
-            </div>
+
+                    
+                </div>
+            </template>
+            <template v-else>
+                <div class="w-full h-full bg-zinc-200">
+                    <div class="w-full h-full flex flex-col items-center justify-center space-y-4">
+                        <NuxtImg src="/images/Follower-fishing-fishing.gif" class="w-auto h-32"/>
+                        <p class="text-gray-400">CotL Skin Builder by InfernoDragon0</p>
+                        <p class="text-gray-500 text-2xl">Select or create a skin to start editing</p>
+                        <div class="flex space-x-2 w-[400px]">
+                            <USelectMenu class="flex-1" v-model="skinSelectedProps" :options="skinProps" option-attribute="name" searchable>
+                                <template #label>
+                                    <span v-if="skinSelectedProps != ''" class="">{{ skinSelectedProps.name }} <span class="text-xs font-normal text-gray-500">- {{ skinSelectedProps.type }}</span></span>
+                                    <span v-else>Select a Skin</span>
+                                </template>
+                                <template #option="{ option: skin }">
+                                    <div class="flex place-items-center space-x-2">
+                                        <NuxtImg :src="skin.type == 'Follower Skin' ? '/images/Follower-avatars-avatar-normal.png' : '/images/Lamb-idle-still.png'" class="w-auto h-[32px]"/> 
+                                        <span class="line-clamp-1 text-ellipsis">{{ skin.name }}</span> 
+                                        <span class="text-sm place-items-center font-normal text-gray-500 line-clamp-1">--- {{ skin.type }}</span>
+                                        
+                                    </div>
+                                </template>
+                            </USelectMenu>
+                            <UButton onclick="createSkinModal.showModal()" class="bg-slate-700 hover:bg-slate-500">New Skin</UButton>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            
+        </div>
     </div>
 
     <dialog id="createSkinModal" class="modal">
@@ -329,6 +331,8 @@
     <dialog id="installTutorialModal" class="modal">
         <div class="modal-box">
             <h3 class="font-bold text-lg">Installation Instructions</h3>
+            <p class="py-4">"PNG format, any size. Ensure that it has true transparency (some image editors such as CSP may produce white instead). WARNING: Skin data is stored locally! If you clear the cache of this site, you will need to redo everything."</p>
+            <p class="py-4">"Once you have added override slots, select the slot you want to edit, and then in the image preview, drag to select parts of the image to apply to that override slot."</p>
             <p class="py-4">To add the skin to game, follow these instructions, after pressing the green "Download Skin" button.</p>
 
             <p class="py-2">Ensure that you have COTL JSONLoader installed. You can get it from Thunderstore or Nexusmods.</p>
@@ -397,6 +401,9 @@ const scaleProps = ref({
     scaleX: 1.0,
     scaleY: 1.0
 });
+
+const showOverrideSlotOnly = ref(false);
+const showOriginalSprite = ref(false);
 
 const skinName = ref('');
 const skinType = ref('Follower Skin');
@@ -743,245 +750,326 @@ const defaultSkinSlotsProps = ref([
 "LESHY_FACE_SICK",
 ]);
 
+//REGEX: Tuple\.Create\(\d+, "([^"]+)"\) \}, to remove the Tuple.Create(0, "MOUTH_BEDREST") },
 const defaultLambSkinSlotsProps = ref([
-"Crown_Particle1",
-"Crown_Particle2",
-"Crown_Particle6",
-"effects/Crown_Particle3",
-"effects/Crown_Particle4",
-"effects/Crown_Particle5",
-"sunburst",
-"sunburst2",
-"Corpse",
-"Halo",
-"ARM_LEFT",
-"PonchoShoulder",
-"FishingRod_Front",
-"Tools/FishingRod",
-"Tools/FishingRod2",
-"Tools/Mop",
-"Tools/PITCHFORK",
-"Tools/SEED_BAG",
-"Tools/SPADE",
-"Tools/WATERING_CAN",
-"LEG_LEFT",
-"LEG_RIGHT",
-"Body",
-"PonchoLeft",
-"PonchoLeft2",
-"DaggerFlipped",
-"Weapons/Axe",
-"Weapons/Blunderbuss",
-"Weapons/Dagger",
-"Weapons/Hammer",
-"Weapons/Sword",
-"ARM_RIGHT",
-"ArmSpikes",
-"PonchoRight",
-"PonchoRight2",
-"PonchoExtra",
-"images/Rope",
-"images/RopeTopRight",
-"images/RopeTopLeft",
-"Bell",
-"Antler",
-"Antler_Horn",
-"Antler_RITUAL",
-"Antler_SERMON",
-"EAR_LEFT",
-"EAR_RITUAL",
-"EAR_SERMON",
-"CrownGlow",
-"images/CrownSpikes",
-"BigCrown",
-"CROWN",
-"CROWN_RITUAL",
-"CROWN_SERMON",
-"CROWN_WHITE",
-"CROWN_EYE",
-"images/CrownEyeBig",
-"images/CrownEyeShut",
-"images/CrownEyeShut2",
-"images/CrownEyeShut3",
-"images/CrownEye_RITUAL",
-"images/CrownEye_SERMON",
-"HeadBack",
-"HeadBackDown",
-"HeadBackDown_RITUAL",
-"HeadBackDown_SERMON",
-"HeadFront",
-"HeadFrontDown",
-"EAR_RIGHT",
-"EAR_RIGHT_RITUAL",
-"EAR_RIGHT_SERMON",
-"effects/eye_blood",
-"effects/eye_tears",
-"Face/MOUTH_CHEEKY",
-"Face/MOUTH_CHUBBY",
-"Face/MOUTH_DEAD",
-"Face/MOUTH_GRUMPY",
-"Face/MOUTH_HAPPY",
-"Face/MOUTH_INDIFFERENT",
-"Face/MOUTH_KAWAII",
-"Face/MOUTH_OO",
-"Face/MOUTH_OPEN",
-"Face/MOUTH_SAD",
-"Face/MOUTH_SCARED",
-"Face/MOUTH_SLEEP_0",
-"Face/MOUTH_SLEEP_1",
-"Face/MOUTH_TONGUE",
-"Face/MOUTH_UNCONVERTED",
-"MOUTH_GRIMACE",
-"MOUTH_NORMAL",
-"MOUTH_SNARL",
-"MOUTH_TALK",
-"MOUTH_TALK1",
-"MOUTH_TALK2",
-"MOUTH_TALK3",
-"MOUTH_TALK4",
-"MOUTH_TALK5",
-"MOUTH_TALK_HAPPY",
-"MOUTH_UNCONVERTED_SPEAK",
-"EYE",
-"EYE_ANGRY_LEFT",
-"EYE_ANGRY_LEFT_UP",
-"EYE_BACK",
-"EYE_DETERMINED_DOWN_LEFT",
-"EYE_DETERMINED_LEFT",
-"EYE_DOWN",
-"EYE_GRIMACE",
-"EYE_HALF_CLOSED",
-"EYE_HAPPY",
-"EYE_HAPPY2",
-"EYE_UP",
-"EYE_WEARY_LEFT",
-"EYE_WEARY_LEFT_DOWN",
-"EYE_WHITE",
-"EYE_WHITE_ANGRY",
-"EYE_WORRIED_LEFT",
-"Face/EYE_CLOSED",
-"Face/EYE_DEAD",
-"Face/EYE_RED",
-"Face/EYE_RED_ANGRY",
-"Face/EYE_SHOCKED",
-"Face/EYE_SLEEPING",
-"Face/EYE_SQUINT",
-"Face/EYE_UNCONVERTED",
-"Face/EYE_UNCONVERTED_WORRIED",
-"EYE_ANGRY_RIGHT",
-"EYE_ANGRY_RIGHT_UP",
-"EYE_DETERMINED_DOWN_RIGHT",
-"EYE_DETERMINED_RIGHT",
-"EYE_WEARY_RIGHT",
-"EYE_WEARY_RIGHT_DOWN",
-"EYE_WORRIED_RIGHT",
-"HairTuft",
-"Tools/BookFlipping_1",
-"Tools/BookFlipping_2",
-"Tools/BookFlipping_3",
-"Tools/BookFlipping_4",
-"Tools/Book_closed",
-"Tools/Book_open",
-"PonchoRightCorner",
-"images/CrownMouth",
-"images/CrownMouthOpen",
-"Tools/Chalice",
-"Tools/Chalice_Skull",
-"Tools/Chalice_Skull_Drink",
-"effects/slam_effect0001",
-"effects/slam_effect0002",
-"effects/slam_effect0003",
-"effects/slam_effect0004",
-"effects/slam_effect0005",
-"effects/slam_effect0006",
-"images/CrownSpikes2",
-"images/AttackHand1",
-"images/AttackHand2",
-"Weapons/Sling",
-"Weapons/SlingRope",
-"SlingHand",
-"Arm_frontbit",
-"whiteball",
-"effects/whiteball",
-"effects/portal_btm",
-"effects/portal_top",
-"portal_splash",
-"GrappleHook",
-"Weapons/Lute",
-"Weapons/SlingHand",
-"images/Crown_half_left",
-"images/Crown_half_right",
-"Sparks1",
-"Sparks2",
-"Weapons/SpecialSword_1",
-"Weapons/SpecialSword_2",
-"Weapons/SpecialSword_3",
-"Weapons/SpecialSword_4",
-"KnowledgeParchment",
-"Knowledge_Curse",
-"Knowledge_Decoration",
-"Knowledge_Trinket",
-"Knowledge_Weapon",
-"MonsterHeart_glow",
-"Net",
-"Tools/Hammer",
-"Tools/Pickaxe",
-"Tools/Pickaxe2",
-"Tools/Woodaxe",
-"Tools/Woodaxe2",
-"GiftMedium",
-"GiftSmall",
-"effects/MonsterBlood1",
-"MonsterBlood2",
-"Tools/CardBack",
-"Tools/CardFront",
-"RitualSymbolHalo",
-"RitualSymbol_1",
-"RitualSymbol_2",
-"effects/RitualRing2",
-"effects/SermonRing2",
-"AttackSlash1",
-"AttackSlash2",
-"effects/RitualRing",
-"effects/SermonRing",
-"CollarPiece1",
-"CollarPiece2",
-"ChainBit1",
-"ChainBit2",
-"ChainBit3",
-"SwordHeavy",
-"Weapons/SwordHeavy_Charm",
-"Weapons/SwordHeavy_Ice",
-"Weapons/SwordHeavy_Necromancy",
-"effects/SpawnHeavy_1",
-"effects/SpawnHeavy_2",
-"effects/SpawnHeavy_3",
-"effects/SpawnHeavy_4",
-"SpawnHeavy_glow",
-"FireSmall_0001",
-"FireSmall_0002",
-"FireSmall_0003",
-"FireSmall_0004",
-"FireSmall_0005",
-"FireSmall_0006",
-"FireSmall_0007",
-"FireWild_0001",
-"FireWild_0002",
-"FireWild_0003",
-"FireWild_0004",
-"FireWild_0005",
-"FireWild_0006",
-"FireWild_0007",
-"FireWild_0008",
-"FireWild_0009",
-"effects/chunder_1",
-"effects/chunder_2",
-"effects/chunder_3",
-"Curses/Icon_Curse_Blast",
-"Curses/Icon_Curse_Fireball",
-"Curses/Icon_Curse_Slash",
-"Curses/Icon_Curse_Splatter",
-"Curses/Icon_Curse_Tentacle"
+    "Crown_Particle1",
+    "Crown_Particle2",
+    "Crown_Particle6", 
+    "effects/Crown_Particle3",
+    "effects/Crown_Particle4",
+    "effects/Crown_Particle5",
+    "sunburst",
+    "sunburst2",
+    "Corpse",
+    "Corpse2",
+    "Halo",
+    "ARM_LEFT",
+    "PonchoShoulder",
+    "Tools/PITCHFORK",
+    "Tools/SEED_BAG",
+    "Tools/SPADE",
+    "Tools/WATERING_CAN",
+    "Tools/FishingRod", 
+    "Tools/FishingRod2", 
+    "Tools/Mop", 
+    "FishingRod_Front", 
+    "GauntletHeavya", 
+    "GauntletHeavy2a", 
+    "images/AttackHand1", 
+    "images/AttackHand2", 
+    "LEG_LEFT", 
+    "LEG_RIGHT", 
+    "Body", 
+    "PonchoLeft", 
+    "PonchoLeft2", 
+    "Weapons/Axe", 
+    "Weapons/Blunderbuss", 
+    "Weapons/Dagger", 
+    "Weapons/Hammer", 
+    "Weapons/Sword", 
+    "DaggerFlipped", 
+    "Shield", 
+    "Blunderbuss/Flipped", 
+    "ARM_RIGHT", 
+    "PonchoShoulder_Right", 
+    "ArmSpikes", 
+    "PonchoRight", 
+    "PonchoRight2", 
+    "PonchoExtra", 
+    "images/Rope", 
+    "images/RopeTopRight", 
+    "images/RopeTopLeft", 
+    "Bell", 
+    "Antler", 
+    "Antler_RITUAL", 
+    "Antler_SERMON", 
+    "Antler_Horn", 
+    "Antler2", 
+    "Antler_SERMON2", 
+    "Antler_RITUAL2", 
+    "Antler_Horn2", 
+    "EAR_LEFT", 
+    "EAR_RITUAL", 
+    "EAR_SERMON", 
+    "CrownGlow", 
+    "images/CrownSpikesc", 
+    "CROWN", 
+    "CROWN_RITUAL", 
+    "CROWN_SERMON", 
+    "BigCrown", 
+    "CROWN_WHITE", 
+    "images/CrownEyeShut3a", 
+    "images/CrownEyeShut2a", 
+    "images/CrownEyeShuta", 
+    "CROWN_EYEa", 
+    "images/CrownEye_RITUALa", 
+    "images/CrownEye_SERMONa", 
+    "images/CrownEyeBiga", 
+    "images/CrownEyeBig2a", 
+    "CrownEyeSina", 
+    "CROWN_EYEb", 
+    "images/CrownEyeBigb", 
+    "images/CrownEyeBig2b", 
+    "images/CrownEyeShutb", 
+    "images/CrownEyeShut2b", 
+    "images/CrownEyeShut3b", 
+    "images/CrownEye_RITUALb", 
+    "images/CrownEye_SERMONb", 
+    "CrownEyeSinb", 
+    "HeadBack", 
+    "HeadBackDown", 
+    "HeadBackDown_RITUAL", 
+    "HeadBackDown_SERMON", 
+    "HeadFront", 
+    "HeadFrontDown", 
+    "EAR_RIGHT", 
+    "EAR_RIGHT_RITUAL", 
+    "EAR_RIGHT_SERMON", 
+    "effects/eye_blood", 
+    "effects/eye_tears", 
+    "effects/eye_blood2", 
+    "effects/eye_tears2", 
+    "MOUTH_NORMAL", 
+    "Face/MOUTH_CHEEKY", 
+    "Face/MOUTH_CHUBBY", 
+    "Face/MOUTH_DEAD", 
+    "Face/MOUTH_GRUMPY", 
+    "Face/MOUTH_HAPPY", 
+    "Face/MOUTH_INDIFFERENT", 
+    "Face/MOUTH_KAWAII", 
+    "Face/MOUTH_OO", 
+    "Face/MOUTH_OPEN", 
+    "Face/MOUTH_SAD", 
+    "Face/MOUTH_SCARED", 
+    "Face/MOUTH_SLEEP_0", 
+    "Face/MOUTH_SLEEP_1", 
+    "Face/MOUTH_TONGUE", 
+    "Face/MOUTH_UNCONVERTED", 
+    "MOUTH_TALK", 
+    "MOUTH_TALK_HAPPY", 
+    "MOUTH_UNCONVERTED_SPEAK", 
+    "MOUTH_GRIMACE", 
+    "MOUTH_SNARL", 
+    "MOUTH_TALK1", 
+    "MOUTH_TALK2", 
+    "MOUTH_TALK3", 
+    "MOUTH_TALK4", 
+    "MOUTH_TALK5", 
+    "Face/MOUTH_HUNGRY1", 
+    "Face/MOUTH_HUNGRY2", 
+    "EYE_LEFT", 
+    "EYE_ANGRY_LEFT", 
+    "EYE_BACK_LEFT", 
+    "EYE_DETERMINED_DOWN_LEFT", 
+    "EYE_DETERMINED_LEFT", 
+    "EYE_DOWN_LEFT", 
+    "EYE_HALF_CLOSED_LEFT", 
+    "EYE_HAPPY_LEFT", 
+    "EYE_UP_LEFT", 
+    "EYE_WORRIED_LEFT", 
+    "Face/EYE_CLOSED_LEFT", 
+    "Face/EYE_DEAD_LEFT", 
+    "Face/EYE_RED_LEFT", 
+    "Face/EYE_SHOCKED_LEFT", 
+    "Face/EYE_SLEEPING_LEFT", 
+    "Face/EYE_SQUINT_LEFT", 
+    "Face/EYE_UNCONVERTED_LEFT", 
+    "Face/EYE_UNCONVERTED_WORRIED_LEFT", 
+    "EYE_ANGRY_LEFT_UP", 
+    "EYE_WHITE_LEFT", 
+    "EYE_WEARY_LEFT", 
+    "EYE_GRIMACE_LEFT", 
+    "EYE_WEARY_LEFT_DOWN", 
+    "EYE_HAPPY2_LEFT", 
+    "Face/EYE_RED_ANGRY_LEFT", 
+    "EYE_WHITE_ANGRY_LEFT", 
+    "Face/EYE_HAPPY_UP_LEFT", 
+    "EYE_RIGHT", 
+    "EYE_ANGRY_RIGHT", 
+    "EYE_BACK_RIGHT", 
+    "EYE_DETERMINED_DOWN_RIGHT", 
+    "EYE_DETERMINED_RIGHT", 
+    "EYE_DOWN_RIGHT", 
+    "EYE_HALF_CLOSED_RIGHT", 
+    "EYE_HAPPY_RIGHT", 
+    "EYE_UP_RIGHT", 
+    "EYE_WORRIED_RIGHT", 
+    "Face/EYE_CLOSED_RIGHT", 
+    "Face/EYE_DEAD_RIGHT", 
+    "Face/EYE_RED_RIGHT", 
+    "Face/EYE_SHOCKED_RIGHT", 
+    "Face/EYE_SLEEPING_RIGHT", 
+    "Face/EYE_SQUINT_RIGHT", 
+    "Face/EYE_UNCONVERTED_RIGHT", 
+    "Face/EYE_UNCONVERTED_WORRIED_RIGHT", 
+    "EYE_ANGRY_RIGHT_UP", 
+    "EYE_WHITE_RIGHT", 
+    "EYE_WEARY_RIGHT", 
+    "EYE_GRIMACE_RIGHT", 
+    "EYE_WEARY_RIGHT_DOWN", 
+    "EYE_HAPPY2_RIGHT", 
+    "Face/EYE_RED_ANGRY_RIGHT", 
+    "EYE_WHITE_ANGRY_RIGHT", 
+    "Face/EYE_HAPPY_UP_RIGHT", 
+    "HairTuft", 
+    "Tools/Book_open", 
+    "Tools/Book_closed", 
+    "Tools/BookFlipping_3", 
+    "Tools/BookFlipping_2", 
+    "Tools/BookFlipping_1", 
+    "Tools/BookFlipping_4", 
+    "PonchoRightCorner", 
+    "PonchoRightCorner2", 
+    "images/CrownMouth", 
+    "images/CrownMouthOpen", 
+    "DRINK", 
+    "Tools/Chalice", 
+    "Tools/Chalice_Skull", 
+    "Tools/Chalice_Skull_Drink", 
+    "effects/slam_effect0006", 
+    "effects/slam_effect0005", 
+    "effects/slam_effect0004", 
+    "effects/slam_effect0003", 
+    "effects/slam_effect0002", 
+    "effects/slam_effect0001", 
+    "images/CrownSpikesa", 
+    "images/CrownSpikes2a", 
+    "images/CrownSpikesb", 
+    "images/CrownSpikes2b", 
+    "AttackHand1", 
+    "AttackHand2", 
+    "GauntletHeavyb", 
+    "GauntletHeavy2b", 
+    "Weapons/Sling", 
+    "Weapons/SlingRope", 
+    "GunHand", 
+    "SlingHand", 
+    "Arm_frontbit", 
+    "Arm_frontbit2", 
+    "whiteball", 
+    "effects/whiteball", 
+    "Weapons/SlingHand", 
+    "effects/portal_btm", 
+    "effects/portal_top", 
+    "portal_splash", 
+    "GrappleHook", 
+    "Weapons/Lute", 
+    "Weapons/SlingHand2", 
+    "images/Crown_half_left", 
+    "images/Crown_half_right", 
+    "Sparks1a", 
+    "Sparks1b", 
+    "Sparks2a", 
+    "Sparks2b", 
+    "Weapons/SpecialSword_1", 
+    "Weapons/SpecialSword_2", 
+    "Weapons/SpecialSword_3", 
+    "Weapons/SpecialSword_4", 
+    "MonsterHeart_glow", 
+    "KnowledgeParchment", 
+    "Knowledge_Trinket", 
+    "Knowledge_Curse", 
+    "Knowledge_Decoration", 
+    "Knowledge_Weapon", 
+    "Tools/Woodaxe", 
+    "Tools/Woodaxe2", 
+    "Tools/Pickaxe", 
+    "Tools/Pickaxe2", 
+    "Tools/Hammer", 
+    "Net", 
+    "Items/WebberSkull", 
+    "Tools/Book_open2", 
+    "Tools/Book_closed2", 
+    "MonsterHeart_glow2", 
+    "GiftSmall", 
+    "GiftMedium", 
+    "RedHeartPickUp", 
+    "effects/MonsterBlood1a", 
+    "effects/MonsterBlood1b", 
+    "MonsterBlood2", 
+    "Tools/CardBack", 
+    "Tools/CardFront", 
+    "Tools/CardBack2", 
+    "Tools/CardFront2", 
+    "Tools/CardBack3", 
+    "Tools/CardFront3", 
+    "Tools/CardBack4", 
+    "Tools/CardFront4", 
+    "Tools/CardBack5", 
+    "Tools/CardFront5", 
+    "Tools/CardBack6", 
+    "Tools/CardFront6", 
+    "RitualSymbolHalo", 
+    "RitualSymbol_1", 
+    "RitualSymbol_2", 
+    "effects/RitualRing2", 
+    "effects/SermonRing2", 
+    "AttackSlash1", 
+    "AttackSlash2", 
+    "effects/RitualRing", 
+    "effects/SermonRing", 
+    "CollarPiece1", 
+    "CollarPiece2", 
+    "ChainBit1", 
+    "ChainBit2", 
+    "ChainBit1b", 
+    "ChainBit3", 
+    "SwordHeavy", 
+    "Weapons/SwordHeavy_Necromancy", 
+    "Weapons/SwordHeavy_Ice", 
+    "Weapons/SwordHeavy_Charm", 
+    "AxeHeavy", 
+    "HammerHeavy", 
+    "Blunderbuss_Heavy", 
+    "effects/SpawnHeavy_1", 
+    "effects/SpawnHeavy_2", 
+    "effects/SpawnHeavy_3", 
+    "effects/SpawnHeavy_4", 
+    "SpawnHeavy_glow", 
+    "FireSmall_0001", 
+    "FireSmall_0002", 
+    "FireSmall_0003", 
+    "FireSmall_0004", 
+    "FireSmall_0005", 
+    "FireSmall_0006", 
+    "FireSmall_0007", 
+    "FireWild_0001", 
+    "FireWild_0002", 
+    "FireWild_0003", 
+    "FireWild_0004", 
+    "FireWild_0005", 
+    "FireWild_0006", 
+    "FireWild_0007", 
+    "FireWild_0008", 
+    "FireWild_0009", 
+    "effects/chunder_1", 
+    "effects/chunder_2", 
+    "effects/chunder_3", 
+    "Curses/Icon_Curse_Blast", 
+    "Curses/Icon_Curse_Fireball", 
+    "Curses/Icon_Curse_Slash", 
+    "Curses/Icon_Curse_Splatter", 
+    "Curses/Icon_Curse_Tentacle",
 ])
 
 ///////////////////////////
