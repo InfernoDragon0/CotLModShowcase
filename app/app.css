@@ -206,11 +206,14 @@ html {
   );
 }
 
-/* Secondary: cream outline ribbon. */
+/* Secondary action. The game site keeps these as plain cream text rather than
+   an outlined ribbon, and an inset ring would be cut off by the notches anyway. */
 .cotl-ribbon-ghost {
   color: var(--color-parchment-100);
   background: transparent;
-  box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--color-parchment-200) 45%, transparent);
+  clip-path: none;
+  border-bottom: 2px solid color-mix(in oklab, var(--color-parchment-200) 45%, transparent);
+  padding-inline: 0.5rem;
 }
 
 .cotl-ribbon-ghost::after {
@@ -218,8 +221,9 @@ html {
 }
 
 .cotl-ribbon-ghost:hover {
-  color: #000;
-  background: var(--color-parchment-100);
+  color: var(--color-crimson-400);
+  background: transparent;
+  border-bottom-color: var(--color-crimson-500);
 }
 
 /* ---------------------------------------------------------------------------
