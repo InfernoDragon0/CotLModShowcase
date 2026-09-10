@@ -5,6 +5,9 @@
 .cache
 dist
 
+# Nuxt Content's local SQLite database
+.data
+
 # Node dependencies
 node_modules
 

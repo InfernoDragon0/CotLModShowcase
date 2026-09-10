@@ -1,0 +1,191 @@
+<script setup lang="ts">
+import { features, editorTools, hotkeys, screenshots } from '~/data/culttweaker'
+import { findMod } from '~/data/mods'
+
+definePageMeta({ layout: 'showcase' })
+
+const mod = findMod('culttweaker')!
+
+useSeoMeta({
+  title: 'CultTweaker — build your own Cult of the Lamb',
+  description: mod.description,
+})
+
+const featureGrid = ref<HTMLElement>()
+const { popIn, onEnter } = useCotlMotion()
+
+onMounted(() => onEnter(featureGrid, () => popIn('.feature-card')))
+
+const activeShot = ref(0)
+</script>
+
+<template>
+  <div>
+    <HeroSection
+      image="/images/culttweaker/1.png"
+      eyebrow="CultTweaker 2.0 · pre-release 6"
+      title="CultTweaker"
+      subtitle="An in-game world editor, custom dungeons, custom spines, weapons, NPCs and quests. For Cult of the Lamb 1.5.26."
+      skin="Fox"
+      animation="build"
+    >
+      <template #actions>
+        <RibbonButton
+          to="https://www.nexusmods.com/cultofthelamb/mods/49"
+          icon="i-lucide-download"
+          size="lg"
+        >
+          Download
+        </RibbonButton>
+        <RibbonButton
+          to="/docs/culttweaker"
+          ghost
+          size="lg"
+        >
+          Documentation
+        </RibbonButton>
+      </template>
+    </HeroSection>
+
+    <SectionBlock
+      title="Everything in the box"
+      subtitle="CultTweaker started as a Spine loader. It is now a full content toolkit for the game."
+    >
+      <div
+        ref="featureGrid"
+        class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <NuxtLink
+          v-for="feature in features"
+          :key="feature.title"
+          :to="feature.to"
+          class="feature-card flex flex-col gap-3 border border-charcoal-700 bg-charcoal-900/70 p-6 transition-colors hover:border-crimson-600"
+        >
+          <UIcon
+            :name="feature.icon"
+            class="size-7 text-crimson-500"
+          />
+          <h3 class="text-base font-bold uppercase tracking-wide text-parchment-50">
+            {{ feature.title }}
+          </h3>
+          <p class="text-sm leading-relaxed text-parchment-300">
+            {{ feature.description }}
+          </p>
+        </NuxtLink>
+      </div>
+    </SectionBlock>
+
+    <SectionBlock
+      dark
+      title="The Worldshaper"
+      subtitle="Press F4 anywhere in the game and start building. Sixteen tools, a layers panel, groups and undo."
+    >
+      <div class="grid gap-12 lg:grid-cols-[1.2fr_1fr]">
+        <div>
+          <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <li
+              v-for="tool in editorTools"
+              :key="tool.name"
+              class="flex items-start gap-3 border border-charcoal-700 bg-charcoal-950/60 p-3"
+            >
+              <NuxtImg
+                :src="`/images/culttweaker/editor-icons/${tool.icon}`"
+                :alt="''"
+                aria-hidden="true"
+                class="size-8 shrink-0"
+                loading="lazy"
+              />
+              <div>
+                <p class="text-sm font-bold uppercase text-parchment-100">
+                  {{ tool.name }}
+                </p>
+                <p class="mt-1 text-xs leading-snug text-parchment-400">
+                  {{ tool.description }}
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-crimson-400">
+            Hotkeys
+          </h3>
+          <dl class="divide-y divide-charcoal-700 border border-charcoal-700">
+            <div
+              v-for="key in hotkeys"
+              :key="key.keys"
+              class="flex items-center justify-between gap-4 px-4 py-2.5"
+            >
+              <dt>
+                <kbd class="rounded bg-charcoal-800 px-2 py-1 font-mono text-xs text-parchment-100">{{ key.keys }}</kbd>
+              </dt>
+              <dd class="text-right text-xs text-parchment-300">
+                {{ key.action }}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </SectionBlock>
+
+    <SectionBlock
+      title="In the game"
+      spines
+      :spine-seed="23"
+    >
+      <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+        <ParchmentFrame :tilt="-0.8">
+          <NuxtImg
+            :src="screenshots[activeShot]!.src"
+            :alt="screenshots[activeShot]!.alt"
+            loading="lazy"
+          />
+        </ParchmentFrame>
+
+        <ul class="flex flex-col gap-2">
+          <li
+            v-for="(shot, index) in screenshots"
+            :key="shot.src"
+          >
+            <button
+              type="button"
+              class="w-full px-4 py-3 text-left text-sm transition-colors"
+              :class="index === activeShot
+                ? 'cotl-ribbon !justify-start !px-6 text-black'
+                : 'border border-charcoal-700 text-parchment-200 hover:border-crimson-600 hover:text-parchment-50'"
+              @click="activeShot = index"
+            >
+              {{ shot.alt }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </SectionBlock>
+
+    <SectionBlock
+      dark
+      title="Get CultTweaker"
+      subtitle="Pre-release builds move fast. Back up your saves and your creations before updating."
+    >
+      <div class="flex flex-wrap items-center gap-4">
+        <RibbonButton
+          v-for="link in mod.links"
+          :key="link.to"
+          :to="link.to"
+          :icon="link.icon"
+          size="lg"
+        >
+          {{ link.label }}
+        </RibbonButton>
+        <RibbonButton
+          to="/docs/culttweaker/installation"
+          ghost
+          size="lg"
+        >
+          Installation guide
+        </RibbonButton>
+      </div>
+    </SectionBlock>
+  </div>
+</template>

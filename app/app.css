@@ -1,0 +1,319 @@
+/**
+ * CotL Mods Showcase — theme tokens and component recipes.
+ *
+ * This is the ONLY place site colours, fonts, radii and the hand-drawn
+ * "Cult of the Lamb" surface treatments are defined. Docus imports this file
+ * after Tailwind + Nuxt UI, so `@theme` here extends their token set.
+ *
+ * Do not import Tailwind here — the Docus CSS module already does, and a
+ * second import would duplicate the whole stylesheet.
+ */
+
+/* Tailwind 4 auto-detects sources next to the CSS entry, but our entry is a
+   generated file in .nuxt, so point it at the real app tree explicitly. */
+@source "../app";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Ribbon / accent red, sampled from the cultofthelamb.com nav ribbon. */
+  --color-crimson-50: #fef2f2;
+  --color-crimson-100: #fee2e2;
+  --color-crimson-200: #fecaca;
+  --color-crimson-300: #fca5a5;
+  --color-crimson-400: #f4555f;
+  --color-crimson-500: #e5202a;
+  --color-crimson-600: #c4161f;
+  --color-crimson-700: #a30e14;
+  --color-crimson-800: #7d0b10;
+  --color-crimson-900: #5c080c;
+  --color-crimson-950: #320406;
+
+  /* Cream used for body copy, the search pill and torn-paper frames. */
+  --color-parchment-50: #fdfaf3;
+  --color-parchment-100: #f7f0e1;
+  --color-parchment-200: #f3ead7;
+  --color-parchment-300: #e8dcc0;
+  --color-parchment-400: #d8c9a6;
+  --color-parchment-500: #c4b184;
+  --color-parchment-600: #a8946a;
+  --color-parchment-700: #8a7856;
+  --color-parchment-800: #6b5c45;
+  --color-parchment-900: #4d4232;
+  --color-parchment-950: #2b2519;
+
+  /* Warm near-black used by the nav bar and section grounds. */
+  --color-charcoal-50: #f6f5f4;
+  --color-charcoal-100: #e7e5e3;
+  --color-charcoal-200: #cbc7c4;
+  --color-charcoal-300: #a9a3a0;
+  --color-charcoal-400: #837c79;
+  --color-charcoal-500: #635c59;
+  --color-charcoal-600: #4c4644;
+  --color-charcoal-700: #3a3433;
+  --color-charcoal-800: #2a2626;
+  --color-charcoal-900: #1f1c1b;
+  --color-charcoal-950: #141212;
+
+  /* Small metallic accents (badges, dividers). Full scale so Nuxt UI can
+     alias it as a colour. */
+  --color-gold-50: #fdf9ec;
+  --color-gold-100: #faf0cf;
+  --color-gold-200: #f5e2a4;
+  --color-gold-300: #f0d27c;
+  --color-gold-400: #e6c15a;
+  --color-gold-500: #d4a83a;
+  --color-gold-600: #b58a26;
+  --color-gold-700: #8e6a1d;
+  --color-gold-800: #6b4f18;
+  --color-gold-900: #4a3611;
+  --color-gold-950: #291d09;
+
+  --radius-cotl: 0.5rem;
+}
+
+/* Nuxt UI design-token overrides. Docus is forced to dark mode, so one set. */
+:root,
+:root.dark {
+  --ui-bg: var(--color-charcoal-950);
+  --ui-bg-muted: var(--color-charcoal-900);
+  --ui-bg-elevated: var(--color-charcoal-800);
+  --ui-bg-accented: var(--color-charcoal-700);
+  --ui-text: var(--color-parchment-100);
+  --ui-text-highlighted: var(--color-parchment-50);
+  --ui-text-muted: var(--color-parchment-400);
+  --ui-text-dimmed: var(--color-parchment-600);
+  --ui-border: color-mix(in oklab, var(--color-parchment-200) 14%, transparent);
+  --ui-border-muted: color-mix(in oklab, var(--color-parchment-200) 8%, transparent);
+  --ui-border-accented: color-mix(in oklab, var(--color-parchment-200) 22%, transparent);
+  --ui-radius: var(--radius-cotl);
+}
+
+html,
+body {
+  background-color: var(--color-charcoal-950);
+  color: var(--color-parchment-100);
+  /* Declared literally, not just as the --font-sans token: Nuxt Fonts scans
+     for `font-family` declarations to decide which faces to self-host. */
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Scrollbar — thin red on charcoal, matching the red rail on the game site.
+   --------------------------------------------------------------------------- */
+html {
+  scrollbar-color: var(--color-crimson-600) var(--color-charcoal-900);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-charcoal-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-crimson-600);
+  border: 2px solid var(--color-charcoal-900);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-crimson-500);
+}
+
+/* ---------------------------------------------------------------------------
+   Surfaces
+   --------------------------------------------------------------------------- */
+
+/* Charcoal ground with a faint paper grain, used behind content sections. */
+.cotl-ground {
+  background-color: var(--color-charcoal-800);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+.cotl-ground-dark {
+  background-color: var(--color-charcoal-950);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* Black panel with a heavy red border, as used for the trailer player. */
+.cotl-panel {
+  background: #000;
+  border: 10px solid var(--color-crimson-600);
+  box-shadow:
+    inset 0 0 0 2px var(--color-crimson-900),
+    0 18px 40px -12px rgb(0 0 0 / 0.8);
+}
+
+/* ---------------------------------------------------------------------------
+   Ribbon button — red banner with notched ends and a darker bottom ledge.
+   Usage: <a class="cotl-ribbon">…</a>
+   --------------------------------------------------------------------------- */
+.cotl-ribbon {
+  --ribbon-notch: 0.75rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #000;
+  background: var(--color-crimson-500);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--ribbon-notch)) 50%,
+    100% 100%,
+    0 100%,
+    var(--ribbon-notch) 50%
+  );
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.cotl-ribbon::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: var(--color-crimson-700);
+}
+
+.cotl-ribbon:hover {
+  background: var(--color-crimson-400);
+  transform: translateY(-1px);
+}
+
+.cotl-ribbon:active {
+  transform: translateY(0);
+}
+
+/* Flat-left variant for ribbons that sit flush against the viewport edge. */
+.cotl-ribbon-start {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--ribbon-notch)) 50%,
+    100% 100%,
+    0 100%
+  );
+}
+
+/* Secondary: cream outline ribbon. */
+.cotl-ribbon-ghost {
+  color: var(--color-parchment-100);
+  background: transparent;
+  box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--color-parchment-200) 45%, transparent);
+}
+
+.cotl-ribbon-ghost::after {
+  display: none;
+}
+
+.cotl-ribbon-ghost:hover {
+  color: #000;
+  background: var(--color-parchment-100);
+}
+
+/* ---------------------------------------------------------------------------
+   Pennant — black callout band with a red keyline and a pointed tail.
+   --------------------------------------------------------------------------- */
+.cotl-pennant {
+  --pennant-point: 2.5rem;
+  position: relative;
+  padding: 3px; /* becomes the red keyline */
+  background: var(--color-crimson-500);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--pennant-point)) 50%,
+    100% 100%,
+    0 100%
+  );
+}
+
+.cotl-pennant > * {
+  background: #000;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--pennant-point)) 50%,
+    100% 100%,
+    0 100%
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   Parchment frame — rough torn-paper border around screenshots.
+   --------------------------------------------------------------------------- */
+.cotl-frame {
+  --frame-tilt: -1deg;
+  padding: 10px;
+  background: var(--color-parchment-200);
+  transform: rotate(var(--frame-tilt));
+  filter: drop-shadow(0 14px 22px rgb(0 0 0 / 0.55));
+  clip-path: polygon(
+    1% 2%, 8% 0.4%, 17% 1.6%, 26% 0.2%, 35% 1.4%, 44% 0.3%, 53% 1.5%, 62% 0.4%,
+    71% 1.6%, 80% 0.5%, 89% 1.4%, 98% 0.6%, 99.4% 9%, 98.6% 18%, 99.6% 27%,
+    98.8% 36%, 99.5% 45%, 98.7% 54%, 99.6% 63%, 98.8% 72%, 99.4% 81%, 98.6% 90%,
+    99.2% 98%, 91% 99.5%, 82% 98.4%, 73% 99.6%, 64% 98.5%, 55% 99.6%, 46% 98.4%,
+    37% 99.6%, 28% 98.5%, 19% 99.5%, 10% 98.6%, 1.5% 99.3%, 0.5% 91%, 1.3% 82%,
+    0.4% 73%, 1.2% 64%, 0.5% 55%, 1.3% 46%, 0.4% 37%, 1.2% 28%, 0.6% 19%, 1.4% 10%
+  );
+}
+
+.cotl-frame > * {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cotl-frame-flat {
+  --frame-tilt: 0deg;
+}
+
+/* ---------------------------------------------------------------------------
+   Ink splat behind section headings.
+   --------------------------------------------------------------------------- */
+.cotl-splat {
+  position: relative;
+  isolation: isolate;
+}
+
+.cotl-splat::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -1.5rem -3rem;
+  background: rgb(0 0 0 / 0.82);
+  filter: blur(14px);
+  border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
+}
+
+/* ---------------------------------------------------------------------------
+   Search pill in the header, matching the cream "SEARCH THE WIKI" field.
+   --------------------------------------------------------------------------- */
+.cotl-search :is(button, input) {
+  background: var(--color-parchment-200);
+  color: var(--color-charcoal-900);
+  border-radius: 999px;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.25);
+}
+
+/* ---------------------------------------------------------------------------
+   Motion helpers. Anime.js drives most motion, but these cover CSS-only cases.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .cotl-ribbon,
+  .cotl-ribbon:hover {
+    transition: none;
+    transform: none;
+  }
+}
