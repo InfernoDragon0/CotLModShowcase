@@ -6,6 +6,14 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  /**
+   * Core Web Vitals from real visits. The module registers its own client
+   * plugin, which reports against the matched route (`/docs/[...slug]`) rather
+   * than every distinct URL, and stays dormant anywhere but a Vercel
+   * deployment with Speed Insights enabled.
+   */
+  modules: ['@vercel/speed-insights/nuxt'],
+
   components: [
     // Themed primitives are used everywhere; keep their names short.
     { path: '~/components/cotl', pathPrefix: false },
