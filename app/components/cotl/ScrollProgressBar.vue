@@ -25,11 +25,11 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="pointer-events-none fixed inset-y-0 right-0 z-50 hidden w-1.5 bg-charcoal-900/60 lg:block"
+    class="pointer-events-none fixed inset-y-0 right-0 z-50 hidden w-1 bg-muted/60 lg:block"
     aria-hidden="true"
   >
     <div
-      class="w-full bg-crimson-500 transition-[height] duration-150 ease-out"
+      class="w-full bg-crimson-700 transition-[height] duration-150 ease-out"
       :style="{ height: `${progress * 100}%` }"
     />
   </div>

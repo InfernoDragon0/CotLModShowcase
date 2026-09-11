@@ -29,12 +29,12 @@ withDefaults(
         v-if="title"
         class="mb-12 max-w-3xl"
       >
-        <h2 class="cotl-splat text-3xl font-extrabold uppercase tracking-tight text-crimson-500 sm:text-4xl">
+        <h2 class="cotl-splat text-3xl font-extrabold uppercase tracking-tight text-primary sm:text-4xl">
           {{ title }}
         </h2>
         <p
           v-if="subtitle"
-          class="mt-4 text-lg text-parchment-200"
+          class="mt-4 text-lg text-highlighted"
         >
           {{ subtitle }}
         </p>

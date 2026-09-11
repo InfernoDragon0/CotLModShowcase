@@ -9,12 +9,16 @@ export interface TarotCard {
   name: string
   description: string
   image: string
+  /** Solo or Co-op, for sets whose cards only work with a second player. */
+  tag?: string
 }
 
 export interface TarotSet {
   key: string
   label: string
   blurb: string
+  /** 'icon' shows the small in-game sprite, 'card' the full card art. */
+  art?: 'icon' | 'card'
   cards: TarotCard[]
 }
 
@@ -54,6 +58,77 @@ export const tarotSets: TarotSet[] = [
       { name: 'Multishot', description: 'Blunderbuss attacks fire in all four directions.', image: '/images/tarot_arrow.png' },
       { name: 'Resilient Gunner', description: 'No recoil when firing the blunderbuss.', image: '/images/tarot_shoes.png' },
       { name: 'Blunder Buster', description: 'Infinite blunderbuss ammo.', image: '/images/tarot_relic.png' },
+    ],
+  },
+  {
+    key: 'set-3',
+    label: 'Set 3 — Unholy Alliance',
+    blurb:
+      'Ten cards built around the Unholy Alliance co-op update: four for solo runs and six that only pay off with a second player. Card art by LiteLikesArt.',
+    art: 'card',
+    cards: [
+      {
+        name: 'Blood for Blood',
+        tag: 'Solo',
+        description: 'Killing an enemy grants you half a spirit heart.',
+        image: '/images/tarots-ua/tarot_bloodforblood.png',
+      },
+      {
+        name: 'Reinforcement',
+        tag: 'Solo',
+        description:
+          'You are immune to traps, and every time you take damage a combat follower is summoned to fight for you.',
+        image: '/images/tarots-ua/tarot_reinforcement.png',
+      },
+      {
+        name: 'Second Wind',
+        tag: 'Solo',
+        description: 'Gain two blue hearts for every heart you currently have.',
+        image: '/images/tarots-ua/tarot_secondwind.png',
+      },
+      {
+        name: 'Final Stand',
+        tag: 'Solo',
+        description: 'For every dead follower you own, weapon damage goes up by 10%.',
+        image: '/images/tarots-ua/tarot_finalstand.png',
+      },
+      {
+        name: 'Static Electricity',
+        tag: 'Co-op',
+        description: 'While the two of you are close together, pressing Attack calls down lightning strikes.',
+        image: '/images/tarots-ua/tarot_staticelectricity.png',
+      },
+      {
+        name: 'Duality',
+        tag: 'Co-op',
+        description: 'Attacking an enemy heals the other player for half a heart.',
+        image: '/images/tarots-ua/tarot_duality.png',
+      },
+      {
+        name: 'Ignite',
+        tag: 'Co-op',
+        description: 'Both players explode when you press Attack at the same time.',
+        image: '/images/tarots-ua/tarot_ignite.png',
+      },
+      {
+        name: 'Transference',
+        tag: 'Co-op',
+        description: 'Taking damage makes the other player explode in a large radius.',
+        image: '/images/tarots-ua/tarot_transference.png',
+      },
+      {
+        name: 'Warding Bond',
+        tag: 'Co-op',
+        description: 'While the two of you are close together, damage is negated 70% of the time.',
+        image: '/images/tarots-ua/tarot_wardingbond.png',
+      },
+      {
+        name: 'Death Contract',
+        tag: 'Co-op',
+        description:
+          'Damage taken to red hearts is transferred to the other player as blue-heart damage.',
+        image: '/images/tarots-ua/tarot_deathcontract.png',
+      },
     ],
   },
 ]

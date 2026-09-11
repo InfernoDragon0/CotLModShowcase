@@ -13,11 +13,14 @@ import { loadImage } from '~/utils/skinImages'
 
 export interface PreviewHandle {
   mount: (element: HTMLElement) => Promise<void>
+  retry: () => Promise<void>
   apply: (variant: SkinVariant, colourSet: number) => Promise<void>
   setAnimation: (name: string) => void
   dispose: () => void
   ready: Ref<boolean>
   failed: Ref<boolean>
+  /** Assets the player has finished, and how many it wants in total. */
+  progress: Ref<{ loaded: number, total: number }>
   animations: Ref<string[]>
   baseSkins: Ref<string[]>
 }
@@ -27,6 +30,7 @@ export function useSkinPreview(): PreviewHandle {
 
   const ready = ref(false)
   const failed = ref(false)
+  const progress = ref({ loaded: 0, total: 0 })
   const animations = ref<string[]>([])
   const baseSkins = ref<string[]>([])
 
@@ -34,16 +38,69 @@ export function useSkinPreview(): PreviewHandle {
   let spine: any = null
   /** GL textures created for the current preview, disposed on each rebuild. */
   let textures: any[] = []
+  /** Kept so the panel can rebuild the player after a failure. */
+  let host: HTMLElement | null = null
+  let watchdog: ReturnType<typeof setInterval> | undefined
+
+  function stopWatchdog() {
+    clearInterval(watchdog)
+    watchdog = undefined
+  }
+
+  /**
+   * Reports download progress, and gives up only once it has stopped moving.
+   *
+   * The skeleton and its atlas are tens of megabytes, so a slow connection can
+   * spend a minute or more here quite legitimately. A fixed timer reported that
+   * as "the preview could not start", and the assets then finished downloading
+   * in the background - which is why coming back to the page a second time
+   * appeared to fix it. Only a long stall counts as a failure now, and the
+   * panel shows the count in the meantime so the wait looks like a wait.
+   */
+  const POLL_MS = 500
+  const STALL_LIMIT_MS = 150_000
+
+  function startWatchdog() {
+    stopWatchdog()
+    let lastLoaded = -1
+    let stalledMs = 0
+
+    watchdog = setInterval(() => {
+      if (ready.value) return stopWatchdog()
+
+      const manager = player?.assetManager
+      const loaded = manager?.getLoaded?.() ?? 0
+      const remaining = manager?.getToLoad?.() ?? 0
+      progress.value = { loaded, total: loaded + remaining }
+
+      if (loaded !== lastLoaded) {
+        lastLoaded = loaded
+        stalledMs = 0
+        return
+      }
+
+      stalledMs += POLL_MS
+      if (stalledMs >= STALL_LIMIT_MS) {
+        failed.value = true
+        stopWatchdog()
+      }
+    }, POLL_MS)
+  }
 
   async function mount(element: HTMLElement) {
     if (player) return
+
+    host = element
+    failed.value = false
+    progress.value = { loaded: 0, total: 0 }
+    startWatchdog()
 
     try {
       player = await createPlayer(element, {
         skin: 'Cat',
         animation: 'idle',
         showControls: true,
-        showLoading: true,
+        showLoading: false,
         success: (instance: any) => {
           spine = window.spine
           const data = instance.skeleton.data
@@ -52,17 +109,30 @@ export function useSkinPreview(): PreviewHandle {
             .map((skin: any) => skin.name)
             .filter((name: string) => name !== 'default')
             .sort()
+          stopWatchdog()
           ready.value = true
         },
         error: (_instance: any, message: string) => {
           console.error('[skin-preview]', message)
+          stopWatchdog()
           failed.value = true
         },
       })
     }
     catch (error) {
       console.error('[skin-preview] could not start the Spine player', error)
+      stopWatchdog()
       failed.value = true
+    }
+  }
+
+  /** Tears the player down and builds it again, for the retry button. */
+  async function retry() {
+    const element = host
+    dispose()
+    if (element) {
+      element.innerHTML = ''
+      await mount(element)
     }
   }
 
@@ -120,8 +190,18 @@ export function useSkinPreview(): PreviewHandle {
       }
       if (!part.image || part.slotIndex < 0) continue
 
+      // Slot indices come from CultTweaker's in-game dump, so the skeleton in
+      // `public/` has to be an export of the same follower. When the two drift
+      // apart the lookup finds nothing and the part silently keeps its base
+      // artwork, which is worth saying out loud.
       const baseAttachment = baseSkin.getAttachment(part.slotIndex, part.partName)
-      if (!baseAttachment) continue
+      if (!baseAttachment) {
+        console.warn(
+          `[skin-preview] slot ${part.slotIndex} of this skeleton has no "${part.partName}".`,
+          'The bundled skeleton and the slot table are out of step.',
+        )
+        continue
+      }
 
       try {
         const image = await loadImage(part.image.dataUrl)
@@ -228,6 +308,7 @@ export function useSkinPreview(): PreviewHandle {
   }
 
   function dispose() {
+    stopWatchdog()
     disposeTextures()
     try {
       // SpinePlayer has no dispose; stopping the render loop releases it.
@@ -242,5 +323,5 @@ export function useSkinPreview(): PreviewHandle {
 
   onBeforeUnmount(dispose)
 
-  return { mount, apply, setAnimation, dispose, ready, failed, animations, baseSkins }
+  return { mount, retry, apply, setAnimation, dispose, ready, failed, progress, animations, baseSkins }
 }

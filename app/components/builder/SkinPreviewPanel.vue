@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { SkinVariant } from '~/utils/followerSkin'
-import { PREVIEW_GAPS } from '~/composables/useFollowerSlots'
 
 const props = defineProps<{
   variant: SkinVariant | null
@@ -11,10 +10,13 @@ const container = ref<HTMLElement>()
 const preview = useSkinPreview()
 
 const animation = ref('idle')
+/** No WebGL at all: say so rather than leaving an empty black square. */
+const unsupported = ref(false)
 
 onMounted(async () => {
   if (!container.value) return
   if (!supportsSpine()) {
+    unsupported.value = true
     return
   }
   await preview.mount(container.value)
@@ -38,54 +40,75 @@ watch(() => preview.ready.value, (isReady) => {
 
 watch(animation, name => preview.setAnimation(name))
 
-/** Parts the bundled skeleton is too old to show. */
-const missingFromSkeleton = computed(() => {
-  if (!props.variant) return []
-  return Object.values(props.variant.parts)
-    .map(part => part.partName)
-    .filter(name => PREVIEW_GAPS.has(name))
-})
-
 defineExpose({ baseSkins: preview.baseSkins })
 </script>
 
 <template>
   <div class="flex flex-col gap-3">
     <div class="flex items-center justify-between gap-3">
-      <h3 class="text-sm font-bold uppercase tracking-wide text-parchment-100">
+      <h3 class="text-sm font-bold uppercase tracking-wide text-highlighted">
         Live preview
       </h3>
+      <!-- The follower skeleton ships over a thousand animations, and building a
+           menu item for every one of them stalled the dropdown on open, so the
+           list is virtualised. `searchable` is not a prop in Nuxt UI 4 - the
+           search box is on by default - and only leaked into the DOM. -->
       <USelectMenu
         v-if="preview.animations.value.length"
         v-model="animation"
         :items="preview.animations.value"
+        :virtualize="true"
         size="sm"
         class="w-44"
-        searchable
       />
     </div>
 
-    <div
-      ref="container"
-      class="aspect-square w-full border border-charcoal-700 bg-charcoal-950"
+    <!-- The rest of the builder is usable immediately; only this square waits on
+         the 43 MB skeleton, so it says so instead of sitting there black. -->
+    <div class="relative aspect-square w-full border border-default bg-charcoal-950">
+      <div ref="container" class="size-full" />
+
+      <div
+        v-if="!unsupported && !preview.failed.value && !preview.ready.value"
+        class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-6 text-center"
+      >
+        <UIcon
+          name="i-lucide-loader-circle"
+          class="size-6 animate-spin text-primary"
+        />
+        <p class="text-sm font-semibold text-highlighted">
+          Loading the follower
+        </p>
+        <p class="text-xs text-muted">
+          The skeleton and its atlas are about 43 MB. They download once, then
+          the browser keeps them. Everything else on this page works meanwhile.
+        </p>
+        <p
+          v-if="preview.progress.value.total"
+          class="text-xs tabular-nums text-dimmed"
+        >
+          {{ preview.progress.value.loaded }} of {{ preview.progress.value.total }} files
+        </p>
+      </div>
+    </div>
+
+    <UAlert
+      v-if="unsupported"
+      color="warning"
+      variant="subtle"
+      icon="i-lucide-triangle-alert"
+      title="This browser cannot run the preview"
+      description="WebGL is unavailable, so the follower cannot be drawn. Everything else in the builder, including the export, still works."
     />
 
     <UAlert
-      v-if="preview.failed.value"
+      v-else-if="preview.failed.value"
       color="warning"
       variant="subtle"
       icon="i-lucide-triangle-alert"
       title="The preview could not start"
-      description="Your browser blocked WebGL, or the Spine runtime failed to load. Exporting still works."
-    />
-
-    <UAlert
-      v-else-if="missingFromSkeleton.length"
-      color="warning"
-      variant="subtle"
-      icon="i-lucide-info"
-      title="Some parts cannot be previewed"
-      :description="`The bundled follower skeleton predates ${missingFromSkeleton.join(', ')}. These parts still export correctly and will work in game.`"
+      description="The Spine runtime or the follower skeleton failed to load. Exporting still works."
+      :actions="[{ label: 'Try again', color: 'neutral', variant: 'subtle', onClick: () => preview.retry() }]"
     />
   </div>
 </template>

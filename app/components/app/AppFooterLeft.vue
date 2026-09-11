@@ -10,7 +10,7 @@ const { links } = useAppConfig()
         :href="links.github"
         target="_blank"
         rel="noopener"
-        class="font-semibold text-parchment-100 hover:text-crimson-400"
+        class="font-semibold text-highlighted hover:text-primary"
       >InfernoDragon0</a>
     </p>
     <p class="text-xs text-dimmed">

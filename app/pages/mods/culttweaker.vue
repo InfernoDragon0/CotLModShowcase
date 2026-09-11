@@ -59,16 +59,16 @@ const activeShot = ref(0)
           v-for="feature in features"
           :key="feature.title"
           :to="feature.to"
-          class="feature-card flex flex-col gap-3 border border-charcoal-700 bg-charcoal-900/70 p-6 transition-colors hover:border-crimson-600"
+          class="feature-card flex flex-col gap-3 border border-default bg-default/70 p-6 transition-colors hover:border-primary"
         >
           <UIcon
             :name="feature.icon"
-            class="size-7 text-crimson-500"
+            class="size-7 text-primary"
           />
-          <h3 class="text-base font-bold uppercase tracking-wide text-parchment-50">
+          <h3 class="text-base font-bold uppercase tracking-wide text-highlighted">
             {{ feature.title }}
           </h3>
-          <p class="text-sm leading-relaxed text-parchment-300">
+          <p class="text-sm leading-relaxed text-default">
             {{ feature.description }}
           </p>
         </NuxtLink>
@@ -86,7 +86,7 @@ const activeShot = ref(0)
             <li
               v-for="tool in editorTools"
               :key="tool.name"
-              class="flex items-start gap-3 border border-charcoal-700 bg-charcoal-950/60 p-3"
+              class="flex items-start gap-3 border border-default bg-default/60 p-3"
             >
               <NuxtImg
                 :src="`/images/culttweaker/editor-icons/${tool.icon}`"
@@ -96,10 +96,10 @@ const activeShot = ref(0)
                 loading="lazy"
               />
               <div>
-                <p class="text-sm font-bold uppercase text-parchment-100">
+                <p class="text-sm font-bold uppercase text-highlighted">
                   {{ tool.name }}
                 </p>
-                <p class="mt-1 text-xs leading-snug text-parchment-400">
+                <p class="mt-1 text-xs leading-snug text-muted">
                   {{ tool.description }}
                 </p>
               </div>
@@ -108,19 +108,19 @@ const activeShot = ref(0)
         </div>
 
         <div>
-          <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-crimson-400">
+          <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-primary">
             Hotkeys
           </h3>
-          <dl class="divide-y divide-charcoal-700 border border-charcoal-700">
+          <dl class="divide-y divide-default border border-default">
             <div
               v-for="key in hotkeys"
               :key="key.keys"
               class="flex items-center justify-between gap-4 px-4 py-2.5"
             >
               <dt>
-                <kbd class="rounded bg-charcoal-800 px-2 py-1 font-mono text-xs text-parchment-100">{{ key.keys }}</kbd>
+                <kbd class="rounded bg-elevated px-2 py-1 font-mono text-xs text-highlighted">{{ key.keys }}</kbd>
               </dt>
-              <dd class="text-right text-xs text-parchment-300">
+              <dd class="text-right text-xs text-default">
                 {{ key.action }}
               </dd>
             </div>
@@ -152,8 +152,8 @@ const activeShot = ref(0)
               type="button"
               class="w-full px-4 py-3 text-left text-sm transition-colors"
               :class="index === activeShot
-                ? 'cotl-ribbon !justify-start !px-6 text-black'
-                : 'border border-charcoal-700 text-parchment-200 hover:border-crimson-600 hover:text-parchment-50'"
+                ? 'cotl-ribbon !justify-start !px-6'
+                : 'border border-default text-highlighted hover:border-primary hover:text-highlighted'"
               @click="activeShot = index"
             >
               {{ shot.alt }}

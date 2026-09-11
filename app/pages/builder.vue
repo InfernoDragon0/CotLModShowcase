@@ -165,36 +165,31 @@ async function deleteProject() {
 
 <template>
   <div>
-    <section class="cotl-ground border-b border-charcoal-800 py-14">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <h1 class="cotl-splat text-3xl font-extrabold uppercase tracking-tight text-crimson-500 sm:text-4xl">
-          Follower skin builder
-        </h1>
-        <p class="mt-4 max-w-3xl text-parchment-200">
-          Build a CultTweaker follower form, or convert one you already made for
-          the old COTL JSONLoader. Everything stays in your browser, and the
-          preview runs the same part placement the mod uses in game.
-        </p>
-        <p class="mt-3 text-sm text-parchment-400">
-          New to follower forms? Read the
-          <NuxtLink
-            to="/docs/culttweaker/follower-forms"
-            class="text-crimson-400 underline underline-offset-4"
-          >
-            follower forms guide
-          </NuxtLink>
-          first.
-        </p>
-      </div>
-    </section>
-
     <ClientOnly>
       <div class="mx-auto max-w-7xl px-6 py-10 lg:px-8">
         <div class="grid gap-8 lg:grid-cols-[22rem_1fr]">
           <!-- Projects and preview -->
           <aside class="flex flex-col gap-6">
-            <div class="border border-charcoal-700 bg-charcoal-950/60 p-4">
-              <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-parchment-100">
+            <div class="border border-default bg-default/60 p-4">
+              <h2 class="mb-2 text-sm font-bold uppercase tracking-wide text-highlighted">
+                Guide
+              </h2>
+              <p class="text-sm text-muted">
+                New to follower forms? Read the
+                <NuxtLink
+                  to="/docs/culttweaker/follower-forms"
+                  target="_blank"
+                  rel="noopener"
+                  class="text-primary underline underline-offset-4"
+                >
+                  follower forms guide
+                </NuxtLink>
+                first.
+              </p>
+            </div>
+
+            <div class="border border-default bg-default/60 p-4">
+              <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-highlighted">
                 Skins
               </h2>
 
@@ -239,7 +234,7 @@ async function deleteProject() {
 
             <div
               v-if="project"
-              class="border border-charcoal-700 bg-charcoal-950/60 p-4"
+              class="border border-default bg-default/60 p-4"
             >
               <BuilderSkinPreviewPanel
                 :variant="variant"
@@ -267,16 +262,16 @@ async function deleteProject() {
           <main class="flex flex-col gap-6">
             <div
               v-if="!project"
-              class="border border-dashed border-charcoal-700 p-12 text-center"
+              class="border border-dashed border-default p-12 text-center"
             >
-              <UIcon name="i-lucide-shirt" class="mx-auto size-10 text-parchment-600" />
-              <p class="mt-4 text-parchment-300">
+              <UIcon name="i-lucide-shirt" class="mx-auto size-10 text-dimmed" />
+              <p class="mt-4 text-default">
                 Create a skin to get started, or import one you already made.
               </p>
             </div>
 
             <template v-else>
-              <div class="flex flex-wrap items-center justify-between gap-4 border border-charcoal-700 bg-charcoal-950/60 p-4">
+              <div class="flex flex-wrap items-center justify-between gap-4 border border-default bg-default/60 p-4">
                 <div class="flex items-center gap-3">
                   <UInput
                     v-model="project.name"
@@ -351,7 +346,7 @@ async function deleteProject() {
               />
 
               <div class="flex items-center justify-between">
-                <h2 class="text-sm font-bold uppercase tracking-wide text-parchment-100">
+                <h2 class="text-sm font-bold uppercase tracking-wide text-highlighted">
                   Parts
                 </h2>
                 <UButton
@@ -380,7 +375,7 @@ async function deleteProject() {
 
               <p
                 v-if="!partEntries.length"
-                class="border border-dashed border-charcoal-700 p-8 text-center text-sm text-parchment-400"
+                class="border border-dashed border-default p-8 text-center text-sm text-muted"
               >
                 No parts yet. Add one, pick a slot, and upload its PNG.
               </p>
@@ -395,7 +390,7 @@ async function deleteProject() {
       />
 
       <template #fallback>
-        <div class="mx-auto max-w-7xl px-6 py-20 text-center text-parchment-400">
+        <div class="mx-auto max-w-7xl px-6 py-20 text-center text-muted">
           Loading the builder…
         </div>
       </template>

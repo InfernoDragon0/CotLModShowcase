@@ -5,7 +5,7 @@ import { readFileAsDataUrl, loadImage } from '~/utils/skinImages'
 const props = defineProps<{
   imageName: string
   part: PartConfig
-  slotOptions: { label: string, value: string, slotIndex: number, group: string, previewable: boolean }[]
+  slotOptions: { label: string, value: string, slotIndex: number, group: string }[]
 }>()
 
 const emit = defineEmits<{
@@ -50,9 +50,9 @@ const unassigned = computed(() => props.part.slotIndex < 0)
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 border border-charcoal-700 bg-charcoal-950/60 p-4">
+  <div class="flex flex-col gap-4 border border-default bg-default/60 p-4">
     <div class="flex items-start gap-4">
-      <div class="flex size-16 shrink-0 items-center justify-center border border-charcoal-700 bg-charcoal-900">
+      <div class="flex size-16 shrink-0 items-center justify-center border border-default bg-charcoal-900">
         <img
           v-if="part.image"
           :src="part.image.dataUrl"
@@ -62,7 +62,7 @@ const unassigned = computed(() => props.part.slotIndex < 0)
         <UIcon
           v-else
           name="i-lucide-image-off"
-          class="size-5 text-parchment-600"
+          class="size-5 text-dimmed"
         />
       </div>
 
@@ -73,7 +73,7 @@ const unassigned = computed(() => props.part.slotIndex < 0)
           placeholder="Image file name"
           @update:model-value="emit('rename', String($event))"
         />
-        <p class="mt-1 text-xs text-parchment-500">
+        <p class="mt-1 text-xs text-muted">
           Exports as <code>{{ imageName }}.png</code>
         </p>
       </div>
@@ -100,7 +100,7 @@ const unassigned = computed(() => props.part.slotIndex < 0)
         @update:model-value="onSlotChange(String($event))"
       />
       <template #help>
-        <span v-if="unassigned" class="text-crimson-400">
+        <span v-if="unassigned" class="text-primary">
           This part has no slot yet and will not export.
         </span>
         <span v-else>Slot index {{ part.slotIndex }}</span>
@@ -163,7 +163,7 @@ const unassigned = computed(() => props.part.slotIndex < 0)
 
     <div>
       <div class="mb-2 flex items-center justify-between">
-        <span class="text-xs font-semibold uppercase tracking-wide text-parchment-300">
+        <span class="text-xs font-semibold uppercase tracking-wide text-default">
           Colour choices
         </span>
         <UButton
@@ -186,7 +186,7 @@ const unassigned = computed(() => props.part.slotIndex < 0)
           <input
             type="color"
             :value="colour"
-            class="size-8 cursor-pointer border border-charcoal-700 bg-transparent"
+            class="size-8 cursor-pointer border border-default bg-transparent"
             @input="setColour(index, ($event.target as HTMLInputElement).value.toUpperCase())"
           >
           <UButton
@@ -203,13 +203,13 @@ const unassigned = computed(() => props.part.slotIndex < 0)
     </div>
 
     <div>
-      <label class="text-xs font-semibold uppercase tracking-wide text-parchment-300">
+      <label class="text-xs font-semibold uppercase tracking-wide text-default">
         Part image
       </label>
       <input
         type="file"
         accept="image/png"
-        class="mt-2 block w-full text-xs text-parchment-300 file:mr-3 file:border-0 file:bg-crimson-600 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:uppercase file:text-black hover:file:bg-crimson-500"
+        class="mt-2 block w-full text-xs text-default file:mr-3 file:border-0 file:bg-crimson-600 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:uppercase file:text-parchment-50 hover:file:bg-crimson-500"
         @change="onImage"
       >
     </div>

@@ -1,8 +1,8 @@
 # CotL Mods Showcase
 
 The site for InfernoDragon0's Cult of the Lamb mods: showcase pages for
-CultTweaker, the Supercharged series and CotL MiniMods, their documentation, and
-a follower skin builder.
+CultTweaker, the Supercharged series, CotL MiniMods and the upcoming COTL MP
+Steam co-op mod, their documentation, and a follower skin builder.
 
 Built with Nuxt 4, [Docus](https://docus.dev) (Nuxt Content 3 + Nuxt UI 4 +
 Tailwind 4), anime.js v4 and the Spine 3.8 web runtime.
@@ -19,12 +19,25 @@ npm test         # unit tests for the skin builder
 Node 22.19 or later is required. The install pins `legacy-peer-deps` in
 `.npmrc`: npm 10's peer resolver crashes on the Nuxt 4 + Docus dependency graph.
 
+### Build memory
+
+`npm run build` raises the Node heap to 6 GB, and `ogImage` is turned off in
+`nuxt.config.ts`. Docus enables nuxt-og-image, which rasterises a 1200x630 PNG
+for every prerendered page through satori and resvg-wasm - 32 of them here.
+That was the slow part of the build and it exhausted the V8 zone allocator
+(`Fatal process out of memory: Zone`) when a dev server and a browser were
+running alongside it. Link previews now use the static `og:image` declared in
+`nuxt.config.ts` instead.
+
+Building while `npm run dev` is running still costs a gigabyte or so of memory;
+stop the dev server first if the machine is tight.
+
 ## Layout
 
 | Path | What lives there |
 | --- | --- |
 | `app/pages` | Showcase pages, the `/builder` tool. Docs routes come from Docus. |
-| `app/components/cotl` | Themed primitives: ribbon buttons, pennants, torn-paper frames. |
+| `app/components/cotl` | Themed primitives: ribbon buttons, torn-paper frames, the scroll rail. |
 | `app/components/app` | Overrides of Docus header and footer slots. |
 | `app/components/spine` | Spine renderers for the hero and background followers. |
 | `app/components/builder` | Skin builder panels. |

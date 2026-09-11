@@ -92,32 +92,32 @@ async function convert() {
   <UModal v-model:open="open" title="Import a JSONLoader skin">
     <template #body>
       <div class="flex flex-col gap-5">
-        <p class="text-sm text-parchment-300">
+        <p class="text-sm text-default">
           Pick the old skin's <code>.json</code> file and the spritesheet it
           points at. Each override is cut out of the sheet into its own image,
           and the colour sets become colour choices.
         </p>
 
         <div>
-          <label class="text-xs font-semibold uppercase tracking-wide text-parchment-300">
+          <label class="text-xs font-semibold uppercase tracking-wide text-default">
             Skin JSON
           </label>
           <input
             type="file"
             accept="application/json,.json"
-            class="mt-2 block w-full text-xs text-parchment-300 file:mr-3 file:border-0 file:bg-charcoal-700 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:uppercase file:text-parchment-100"
+            class="mt-2 block w-full text-xs text-default file:mr-3 file:border-0 file:bg-elevated file:px-3 file:py-1.5 file:text-xs file:font-semibold file:uppercase file:text-highlighted"
             @change="pick('json', $event)"
           >
         </div>
 
         <div>
-          <label class="text-xs font-semibold uppercase tracking-wide text-parchment-300">
+          <label class="text-xs font-semibold uppercase tracking-wide text-default">
             Spritesheet PNG
           </label>
           <input
             type="file"
             accept="image/png"
-            class="mt-2 block w-full text-xs text-parchment-300 file:mr-3 file:border-0 file:bg-charcoal-700 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:uppercase file:text-parchment-100"
+            class="mt-2 block w-full text-xs text-default file:mr-3 file:border-0 file:bg-elevated file:px-3 file:py-1.5 file:text-xs file:font-semibold file:uppercase file:text-highlighted"
             @change="pick('sheet', $event)"
           >
         </div>
@@ -138,7 +138,7 @@ async function convert() {
             v-for="(issue, index) in issues"
             :key="index"
             class="text-xs"
-            :class="issue.level === 'error' ? 'text-crimson-400' : 'text-gold-400'"
+            :class="issue.level === 'error' ? 'text-primary' : 'text-secondary'"
           >
             {{ issue.message }}
           </li>

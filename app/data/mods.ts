@@ -17,7 +17,8 @@ export interface Mod {
   tagline: string
   description: string
   logo: string
-  hero: string
+  /** Key art for the card and page hero. Omitted while a mod has no art yet. */
+  hero?: string
   /** Version string as shown to players. */
   version: string
   /** Game version the mod targets. */
@@ -26,6 +27,8 @@ export interface Mod {
   docs: string
   page: string
   links: ModLink[]
+  /** Not released yet: the card and page drop the download calls to action. */
+  comingSoon?: boolean
 }
 
 export const mods: Mod[] = [
@@ -60,10 +63,10 @@ export const mods: Mod[] = [
     name: 'Supercharged Series',
     tagline: 'Unleash the true potential of the Lamb.',
     description:
-      'Supercharged Tarots adds wildly powerful tarot cards to the run pool. Supercharged Followers lets you rally your flock into battle, equip them, and level them through ten prestige ranks.',
+      'Supercharged Tarots adds wildly powerful tarot cards to the run pool, across three sets including the Unholy Alliance co-op cards. Supercharged Followers lets you rally your flock into battle, equip them, and level them through ten prestige ranks.',
     logo: '/images/tarotlogo.png',
     hero: '/images/tarots.png',
-    version: 'Tarots 1.0.4 · Followers 1.0.5',
+    version: 'Tarots 1.0.4 · Unholy Alliance 1.0.1 · Followers 1.0.5',
     gameVersion: 'Woolhaven',
     docs: '/docs/supercharged',
     page: '/mods/supercharged',
@@ -76,6 +79,11 @@ export const mods: Mod[] = [
       {
         label: 'Tarots on Thunderstore',
         to: 'https://thunderstore.io/c/cult-of-the-lamb/p/InfernoDragon0/Supercharged_Tarots/',
+        icon: 'i-lucide-package',
+      },
+      {
+        label: 'Unholy Alliance on Thunderstore',
+        to: 'https://thunderstore.io/c/cult-of-the-lamb/p/InfernoDragon0/Supercharged_Tarots_UA/',
         icon: 'i-lucide-package',
       },
       {
@@ -107,6 +115,27 @@ export const mods: Mod[] = [
         label: 'Thunderstore',
         to: 'https://cult-of-the-lamb.thunderstore.io/package/InfernoDragon0/CotLMiniMods/',
         icon: 'i-lucide-package',
+      },
+    ],
+  },
+  {
+    slug: 'mpsteam',
+    name: 'COTL MP Steam',
+    tagline: 'Two lambs, one cult.',
+    description:
+      'Online two-player co-op over Steam peer-to-peer. Host on your own save, invite a friend from the Steam overlay or Discord, and run dungeons, bosses and the whole base together with a camera and HUD each.',
+    logo: '/images/mpsteam/icon.png',
+    version: '0.1.0 test build',
+    gameVersion: 'Woolhaven',
+    badge: 'Coming soon',
+    docs: '/docs/mpsteam',
+    page: '/mods/mpsteam',
+    comingSoon: true,
+    links: [
+      {
+        label: 'Join the test on Discord',
+        to: 'https://discord.gg/MUjww9ndx2',
+        icon: 'i-simple-icons-discord',
       },
     ],
   },

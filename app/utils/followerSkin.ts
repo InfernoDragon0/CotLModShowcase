@@ -135,24 +135,55 @@ export function validateVariant(variant: SkinVariant): ValidationIssue[] {
     })
   }
 
+  // Collected per kind rather than per part: a skin with twenty half-finished
+  // parts otherwise buries the page in forty near-identical alerts.
+  const missingSlot: string[] = []
+  const missingImage: string[] = []
+  const badColours: { part: string, hex: string }[] = []
+
   for (const [imageName, part] of parts) {
-    if (!part.partName) {
-      issues.push({ level: 'error', message: `Part "${imageName}" has no slot assigned.` })
-    }
-    if (!part.hideSlot && !part.image) {
-      issues.push({
-        level: 'warning',
-        message: `Part "${imageName}" has no image, so it will only apply its colours.`,
-      })
-    }
+    if (!part.partName) missingSlot.push(imageName)
+    if (!part.hideSlot && !part.image) missingImage.push(imageName)
+
     for (const hex of part.colorChoices) {
       if (!/^#(?:[0-9a-fA-F]{3}){1,2}$/.test(hex)) {
-        issues.push({ level: 'error', message: `Part "${imageName}" has an invalid colour "${hex}".` })
+        badColours.push({ part: imageName, hex })
       }
     }
   }
 
+  if (missingSlot.length) {
+    const { subject, verb } = listParts(missingSlot)
+    issues.push({ level: 'error', message: `${subject} ${verb} no slot assigned.` })
+  }
+
+  if (missingImage.length) {
+    const { subject, verb } = listParts(missingImage)
+    const [pronoun, possessive] = missingImage.length === 1 ? ['it', 'its'] : ['they', 'their']
+    issues.push({
+      level: 'warning',
+      message: `${subject} ${verb} no image, so ${pronoun} will only apply ${possessive} colours.`,
+    })
+  }
+
+  if (badColours.length === 1) {
+    const { part, hex } = badColours[0]!
+    issues.push({ level: 'error', message: `Part "${part}" has an invalid colour "${hex}".` })
+  }
+  else if (badColours.length > 1) {
+    const listed = badColours.map(({ part, hex }) => `"${part}" ("${hex}")`).join(', ')
+    issues.push({ level: 'error', message: `Invalid colours on ${listed}.` })
+  }
+
   return issues
+}
+
+/** `Part "a"` or `Parts "a", "b"`, with a verb that agrees with it. */
+function listParts(names: string[]): { subject: string, verb: string } {
+  const quoted = names.map(name => `"${name}"`).join(', ')
+  return names.length === 1
+    ? { subject: `Part ${quoted}`, verb: 'has' }
+    : { subject: `Parts ${quoted}`, verb: 'have' }
 }
 
 // ---------------------------------------------------------------------------

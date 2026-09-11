@@ -16,8 +16,8 @@ const links = useSiteNavigation()
         v-for="link in links"
         :key="link.to"
         :to="link.to"
-        class="py-2 text-sm font-semibold uppercase tracking-wide text-parchment-200 hover:text-crimson-400"
-        active-class="text-crimson-400"
+        class="py-2 text-sm font-semibold uppercase tracking-wide text-highlighted hover:text-primary"
+        active-class="text-primary"
       >
         {{ link.label }}
       </NuxtLink>

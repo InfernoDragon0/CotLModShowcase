@@ -10,6 +10,7 @@ export function useSiteNavigation(): SiteLink[] {
     { label: 'CultTweaker', to: '/mods/culttweaker' },
     { label: 'Supercharged', to: '/mods/supercharged' },
     { label: 'MiniMods', to: '/mods/minimods' },
+    { label: 'MP Steam', to: '/mods/mpsteam' },
     { label: 'Skin Builder', to: '/builder' },
     { label: 'Docs', to: '/docs' },
   ]

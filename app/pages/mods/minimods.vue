@@ -67,7 +67,7 @@ onMounted(() => popIn('.minimod-card'))
         class="mb-8"
       />
 
-      <p class="mb-8 max-w-2xl text-sm text-parchment-300">
+      <p class="mb-8 max-w-2xl text-sm text-default">
         {{ current.blurb }}
       </p>
 
@@ -75,7 +75,7 @@ onMounted(() => popIn('.minimod-card'))
         <li
           v-for="entry in current.entries"
           :key="entry.slug"
-          class="minimod-card flex gap-4 border border-charcoal-700 bg-charcoal-900/70 p-5 transition-colors hover:border-crimson-600"
+          class="minimod-card flex gap-4 border border-default bg-default/70 p-5 transition-colors hover:border-primary"
         >
           <NuxtImg
             :src="entry.icon"
@@ -85,7 +85,7 @@ onMounted(() => popIn('.minimod-card'))
             loading="lazy"
           />
           <div>
-            <h3 class="flex flex-wrap items-center gap-2 text-sm font-bold uppercase tracking-wide text-parchment-50">
+            <h3 class="flex flex-wrap items-center gap-2 text-sm font-bold uppercase tracking-wide text-highlighted">
               {{ entry.title }}
               <UBadge
                 v-if="entry.since"
@@ -96,7 +96,7 @@ onMounted(() => popIn('.minimod-card'))
                 {{ entry.since }}
               </UBadge>
             </h3>
-            <p class="mt-2 text-xs leading-relaxed text-parchment-300">
+            <p class="mt-2 text-xs leading-relaxed text-default">
               {{ entry.description }}
             </p>
           </div>
@@ -113,19 +113,19 @@ onMounted(() => popIn('.minimod-card'))
     >
       <div class="grid gap-10 lg:grid-cols-2">
         <div>
-          <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-crimson-400">
+          <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-primary">
             Trials
           </h3>
           <ul class="flex flex-col gap-4">
             <li
               v-for="trial in trials"
               :key="trial.title"
-              class="border-l-2 border-crimson-600 bg-charcoal-950/60 py-3 pl-4 pr-4"
+              class="border-l-2 border-crimson-600 bg-default/60 py-3 pl-4 pr-4"
             >
-              <h4 class="text-sm font-bold uppercase text-parchment-50">
+              <h4 class="text-sm font-bold uppercase text-highlighted">
                 {{ trial.title }}
               </h4>
-              <p class="mt-1.5 text-xs leading-relaxed text-parchment-300">
+              <p class="mt-1.5 text-xs leading-relaxed text-default">
                 {{ trial.description }}
               </p>
             </li>
@@ -133,19 +133,19 @@ onMounted(() => popIn('.minimod-card'))
         </div>
 
         <div>
-          <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-gold-400">
+          <h3 class="mb-4 text-sm font-bold uppercase tracking-wide text-secondary">
             Augments
           </h3>
-          <dl class="divide-y divide-charcoal-800 border border-charcoal-700">
+          <dl class="divide-y divide-default border border-default">
             <div
               v-for="augment in augments"
               :key="augment.title"
               class="px-4 py-3"
             >
-              <dt class="text-xs font-bold uppercase text-gold-400">
+              <dt class="text-xs font-bold uppercase text-secondary">
                 {{ augment.title }}
               </dt>
-              <dd class="mt-1 text-xs text-parchment-300">
+              <dd class="mt-1 text-xs text-default">
                 {{ augment.description }}
               </dd>
             </div>

@@ -1,6 +1,6 @@
 ---
 title: Documentation
-description: Technical reference for CultTweaker, the Supercharged series and CotL MiniMods.
+description: Technical reference for CultTweaker, the Supercharged series, CotL MiniMods and COTL MP Steam.
 navigation:
   title: Overview
   icon: i-lucide-book-open
@@ -28,6 +28,11 @@ Custom structures, follower roles, rituals, commands and the Trial of the Gods
 difficulty system.
 :::
 
+:::card{title="COTL MP Steam" icon="i-lucide-users" to="/docs/mpsteam"}
+Online two-player co-op over Steam peer-to-peer. In closed testing — notes on
+hosting, joining and what is synced.
+:::
+
 ::
 
 ## Before you start
@@ -44,3 +49,5 @@ Questions, bug reports and modding talk all happen in the
 - [Follower skin builder](/builder) — convert old COTL JSONLoader skins into the
   CultTweaker follower form format, author new ones, and preview them on a live
   skeleton.
+- [MCP server](/docs/mcp) — connect Claude, Cursor or another AI tool directly to
+  these docs, or read them as plain markdown.

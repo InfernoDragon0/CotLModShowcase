@@ -11,27 +11,6 @@ export interface FollowerSlot {
   PartName: string
 }
 
-/**
- * Parts present in the current game but missing from the follower skeleton
- * bundled with this site, so they cannot be shown in the live preview. They
- * still export correctly and work in game.
- */
-export const PREVIEW_GAPS = new Set([
-  'EYE_CURSED',
-  'Face/MOUTH_CURSED',
-  'LESHY_FACE',
-  'LESHY_FACE_BRAINWASHED',
-  'LESHY_FACE_DISSENTER',
-  'LESHY_FACE_HAPPY',
-  'LESHY_FACE_POSSESSED',
-  'LESHY_FACE_SAD',
-  'LESHY_FACE_SCARED',
-  'LESHY_FACE_SICK',
-  'LESHY_FACE_SIN',
-  'MOUTH_CHATTERING1',
-  'MOUTH_CHATTERING2',
-])
-
 /** Groups parts by their leading word so the picker stays navigable. */
 function groupOf(partName: string): string {
   if (partName.includes('/')) return partName.split('/')[0]!
@@ -72,7 +51,6 @@ export function useFollowerSlots() {
         value: partName,
         slotIndex,
         group: groupOf(partName),
-        previewable: !PREVIEW_GAPS.has(partName),
       }))
       .sort((a, b) => a.group.localeCompare(b.group) || a.label.localeCompare(b.label)),
   )
