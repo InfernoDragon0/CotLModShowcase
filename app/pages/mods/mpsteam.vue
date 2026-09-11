@@ -23,8 +23,7 @@ onMounted(() => onEnter(featureGrid, () => popIn('.feature-card')))
       eyebrow="Coming soon · closed test build 0.1.0"
       title="Two lambs, one cult"
       subtitle="COTL MP Steam brings online two-player co-op to Cult of the Lamb over Steam peer-to-peer. Host on your own save, invite a friend, and run the whole game together."
-      skin="Dog"
-      animation="wave"
+      :foreground="mod.logo"
     >
       <template #actions>
         <RibbonButton

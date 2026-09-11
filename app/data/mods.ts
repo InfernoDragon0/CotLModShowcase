@@ -11,6 +11,18 @@ export interface ModLink {
   icon?: string
 }
 
+/** One image in a mod's showcase gallery. */
+export interface ModShot {
+  /** Where the file lives, or where it should be dropped. */
+  src: string
+  alt: string
+  /**
+   * Nothing at that path yet, so the page draws a labelled wireframe of the
+   * right shape instead of a broken image. Delete the flag once the file is in.
+   */
+  pending?: boolean
+}
+
 export interface Mod {
   slug: string
   name: string
@@ -27,6 +39,8 @@ export interface Mod {
   docs: string
   page: string
   links: ModLink[]
+  /** Screenshots for the mod's showcase section: one feature, two details. */
+  gallery?: ModShot[]
   /** Not released yet: the card and page drop the download calls to action. */
   comingSoon?: boolean
 }
@@ -55,6 +69,20 @@ export const mods: Mod[] = [
         label: 'GitHub',
         to: 'https://github.com/InfernoDragon0/COTL-CustomSpineLoader',
         icon: 'i-simple-icons-github',
+      },
+    ],
+    gallery: [
+      {
+        src: '/images/culttweaker/showcase-1.png',
+        alt: 'The Worldshaper editor open over a custom dungeon',
+      },
+      {
+        src: '/images/culttweaker/image.png',
+        alt: 'The in-game follower form editor, with a custom head override selected on slot 89',
+      },
+      {
+        src: '/images/culttweaker/structure-override.png',
+        alt: 'A vanilla structure replaced with custom artwork',
       },
     ],
   },
@@ -92,6 +120,20 @@ export const mods: Mod[] = [
         icon: 'i-lucide-package',
       },
     ],
+    gallery: [
+      {
+        src: '/images/supercharged/showcase-1.png',
+        alt: 'The flock rallied in a ring around the Lamb at the shrine',
+      },
+      {
+        src: '/images/supercharged/showcase-2.png',
+        alt: 'Supercharged tarot cards laid out with their effects',
+      },
+      {
+        src: '/images/tarots.png',
+        alt: 'A spread of Supercharged tarot cards',
+      },
+    ],
   },
   {
     slug: 'minimods',
@@ -99,8 +141,8 @@ export const mods: Mod[] = [
     tagline: 'Custom stuff for base management and combat.',
     description:
       'Twenty custom structures, new follower roles, new rituals, follower commands and the Trial of the Gods difficulty system that turns every run into a challenge of your own design.',
-    logo: '/images/customstruct.png',
-    hero: '/images/cotlminimodsbanner.png',
+    logo: '/images/minimods/icon.png',
+    hero: '/images/minimods/showcase-3.jpeg',
     version: '1.3.3',
     gameVersion: 'Woolhaven',
     docs: '/docs/minimods',
@@ -117,13 +159,27 @@ export const mods: Mod[] = [
         icon: 'i-lucide-package',
       },
     ],
+    gallery: [
+      {
+        src: '/images/minimods/showcase-1.png',
+        alt: 'The Trial of the Gods screen, with the trial and augment cards laid out',
+      },
+      {
+        src: '/images/minimods/showcase-2.png',
+        alt: 'A MiniMods item menu open over the cult base',
+      },
+      {
+        src: '/images/minimods/showcase-3.jpeg',
+        alt: 'A base built out with custom MiniMods structures and decorated followers',
+      },
+    ],
   },
   {
     slug: 'mpsteam',
     name: 'COTL MP Steam',
     tagline: 'Two lambs, one cult.',
     description:
-      'Online two-player co-op over Steam peer-to-peer. Host on your own save, invite a friend from the Steam overlay or Discord, and run dungeons, bosses and the whole base together with a camera and HUD each.',
+      'Online two-player co-op over Steam peer-to-peer. Host on your own save, invite a friend from the Steam overlay or Discord, and run dungeons, bosses and build a base together with your friends online.',
     logo: '/images/mpsteam/icon.png',
     version: '0.1.0 test build',
     gameVersion: 'Woolhaven',
@@ -136,6 +192,18 @@ export const mods: Mod[] = [
         label: 'Join the test on Discord',
         to: 'https://discord.gg/MUjww9ndx2',
         icon: 'i-simple-icons-discord',
+      },
+    ],
+    gallery: [
+      {
+        src: '/images/mpsteam/showcase-1.png',
+        alt: 'Two lambs running a dungeon together',
+        pending: true,
+      },
+      {
+        src: '/images/mpsteam/showcase-2.png',
+        alt: 'The lobby screen with a friend joining',
+        pending: true,
       },
     ],
   },

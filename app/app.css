@@ -234,6 +234,70 @@ html {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
+/* Section edges.
+ *
+ * Pair these with `.cotl-ground-dark` on a strip at the top or bottom of a
+ * band: the strip carries the page's own ground, grain included, and is masked
+ * away towards the middle of the section. One band then hands over to the next
+ * on exactly the colour the page is already painted in, with no line where the
+ * artwork stops. Matching the ground by hand instead would miss the grain,
+ * which is worth about three levels of brightness on its own. */
+.cotl-seam-top,
+.cotl-seam-bottom {
+  pointer-events: none;
+}
+
+.cotl-seam-top {
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+}
+
+.cotl-seam-bottom {
+  -webkit-mask-image: linear-gradient(to top, #000, transparent);
+  mask-image: linear-gradient(to top, #000, transparent);
+}
+
+/* Artwork edges.
+ *
+ * The strips above settle the *colour* at a boundary, but a band still ends on
+ * a line if its artwork is still legible when it gets there: detail, then
+ * nothing, reads as an edge even when the average brightness matches on both
+ * sides. These dissolve the art itself over a long, eased run - stated in
+ * percentages, so it scales with however tall the band turns out to be - and
+ * the extra stops keep the falloff from starting with a visible kink.
+ *
+ * Put them on a wrapper that is not itself transformed: a mask is applied in
+ * the element's own box, so a scaled layer would carry its soft edges off
+ * past the ends of the section. */
+.cotl-art-fade-y {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%, rgba(0, 0, 0, 0.06) 9%, rgba(0, 0, 0, 0.3) 18%,
+    rgba(0, 0, 0, 0.78) 30%, #000 40%, #000 60%, rgba(0, 0, 0, 0.78) 70%,
+    rgba(0, 0, 0, 0.3) 82%, rgba(0, 0, 0, 0.06) 91%, transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%, rgba(0, 0, 0, 0.06) 9%, rgba(0, 0, 0, 0.3) 18%,
+    rgba(0, 0, 0, 0.78) 30%, #000 40%, #000 60%, rgba(0, 0, 0, 0.78) 70%,
+    rgba(0, 0, 0, 0.3) 82%, rgba(0, 0, 0, 0.06) 91%, transparent 100%
+  );
+}
+
+/* The hero only needs its foot dissolved: its head sits under the header. */
+.cotl-art-fade-b {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%, #000 62%, rgba(0, 0, 0, 0.82) 74%,
+    rgba(0, 0, 0, 0.42) 85%, rgba(0, 0, 0, 0.1) 94%, transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%, #000 62%, rgba(0, 0, 0, 0.82) 74%,
+    rgba(0, 0, 0, 0.42) 85%, rgba(0, 0, 0, 0.1) 94%, transparent 100%
+  );
+}
+
 /* Recessed panel with a heavy red border, as used for the trailer player. */
 .cotl-panel {
   background: var(--cotl-panel-bg);
@@ -411,3 +475,22 @@ html {
     transform: none;
   }
 }
+
+/* Placeholder for artwork that has not been shot yet. The hatching reads as
+   "nothing here on purpose" rather than as a failed image. */
+.cotl-wireframe {
+  background-color: color-mix(in oklab, var(--color-charcoal-950) 70%, transparent);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 10px,
+    color-mix(in oklab, var(--ui-border) 45%, transparent) 10px 11px
+  );
+  border: 1px dashed var(--ui-border-accented);
+}
+
+/* Scroll stepping on the home page lives in `useSectionStepper`, not in CSS.
+   CSS scroll-snap cannot express "one gesture, one section": `mandatory` snaps
+   to whichever point is *nearest* when the gesture ends, so a single wheel
+   notch springs straight back to where it started. Worse, a snap area taller
+   than the window clamps scrolling inside itself, which left the page unable
+   to reach anything below the MP Steam section. */

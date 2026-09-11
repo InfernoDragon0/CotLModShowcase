@@ -38,8 +38,7 @@ onMounted(() => popIn('.minimod-card'))
       eyebrow="CotL MiniMods 1.3.3"
       title="Trial of the Gods"
       subtitle="Twenty custom structures, eight rituals, eight follower roles, and a difficulty system you dial in yourself."
-      skin="Deer"
-      animation="pray"
+      :foreground="mod.logo"
     >
       <template #actions>
         <RibbonButton

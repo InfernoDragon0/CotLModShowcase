@@ -100,7 +100,6 @@ export function useSkinPreview(): PreviewHandle {
         skin: 'Cat',
         animation: 'idle',
         showControls: true,
-        showLoading: false,
         success: (instance: any) => {
           spine = window.spine
           const data = instance.skeleton.data

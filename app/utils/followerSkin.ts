@@ -142,7 +142,9 @@ export function validateVariant(variant: SkinVariant): ValidationIssue[] {
   const badColours: { part: string, hex: string }[] = []
 
   for (const [imageName, part] of parts) {
-    if (!part.partName) missingSlot.push(imageName)
+    // An imported part can name a slot that no longer exists in the game, which
+    // leaves the index at -1: it exports, and then draws nothing.
+    if (!part.partName || part.slotIndex < 0) missingSlot.push(imageName)
     if (!part.hideSlot && !part.image) missingImage.push(imageName)
 
     for (const hex of part.colorChoices) {

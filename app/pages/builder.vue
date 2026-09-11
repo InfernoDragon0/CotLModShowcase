@@ -36,7 +36,32 @@ const variant = computed<SkinVariant | null>(() => {
   return found ?? project.value?.variants[0] ?? null
 })
 
+const variantNames = computed(() => project.value?.variants.map(entry => entry.name) ?? [])
+
+/**
+ * The first variant is the skin's base form, and CultTweaker loads a form from
+ * it, so it stays. Anything after it can go.
+ */
+const deletableVariant = computed(() =>
+  !!variant.value
+  && !!project.value
+  && project.value.variants.length > 1
+  && project.value.variants[0]?.name !== variant.value.name,
+)
+
 const partEntries = computed(() => Object.entries(variant.value?.parts ?? {}))
+
+/**
+ * Slots this variant has already used. A slot draws one attachment, so a second
+ * part pointing at it only shadows the first: the pickers hide what is taken and
+ * a variant that covers every slot cannot add another part.
+ */
+const takenSlots = computed(() => partEntries.value.map(([, part]) => part.partName).filter(Boolean))
+
+const freeSlot = computed(() => {
+  const taken = new Set(takenSlots.value)
+  return slotOptions.value.find(option => !taken.has(option.value)) ?? null
+})
 
 const issues = computed(() => (variant.value ? validateVariant(variant.value) : []))
 const blocking = computed(() => issues.value.filter(issue => issue.level === 'error'))
@@ -70,11 +95,45 @@ function createProject() {
 }
 
 function addPart() {
-  if (!variant.value) return
+  if (!variant.value || !freeSlot.value) return
   let name = 'part'
   let index = 1
   while (variant.value.parts[name]) name = `part${++index}`
-  variant.value.parts[name] = createPart('', -1)
+
+  // A new part starts on the first slot still going spare and carries the
+  // variant's colour count, so it is exportable the moment it is added.
+  variant.value.parts[name] = createPart(freeSlot.value.value, freeSlot.value.slotIndex, {
+    colorChoices: Array.from({ length: colourSetCount.value }, () => '#FFFFFF'),
+  })
+  save()
+}
+
+/**
+ * Colours are a per-variant property that happens to be stored per part: the
+ * game reads them as sets, and rejects a form whose parts disagree on how many
+ * there are. Both editors therefore act on every part at once.
+ */
+function addColour() {
+  if (!variant.value) return
+  const next = colourSetCount.value + 1
+  for (const part of Object.values(variant.value.parts)) {
+    const colours = [...part.colorChoices]
+    while (colours.length < next) colours.push('#FFFFFF')
+    part.colorChoices = colours.slice(0, next)
+  }
+  save()
+}
+
+function removeColour(index: number) {
+  if (!variant.value || colourSetCount.value <= 1) return
+  const count = colourSetCount.value
+  for (const part of Object.values(variant.value.parts)) {
+    const colours = [...part.colorChoices]
+    while (colours.length < count) colours.push('#FFFFFF')
+    colours.splice(index, 1)
+    part.colorChoices = colours
+  }
+  if (colourSet.value >= count - 1) colourSet.value = Math.max(0, count - 2)
   save()
 }
 
@@ -157,9 +216,66 @@ async function download() {
   }
 }
 
-async function deleteProject() {
+/**
+ * Pending destructive action, shown in the confirm dialog.
+ *
+ * Skins live in this browser and nowhere else, so a deletion cannot be undone
+ * from a server copy: both of them ask first.
+ */
+const confirming = ref<{ title: string, description: string, run: () => Promise<void> } | null>(null)
+const confirmOpen = computed({
+  get: () => confirming.value !== null,
+  set: (value: boolean) => {
+    if (!value) confirming.value = null
+  },
+})
+const deleting = ref(false)
+
+function askDeleteProject() {
   if (!project.value) return
-  await store.remove(project.value.id)
+  const name = project.value.name
+  const id = project.value.id
+  confirming.value = {
+    title: `Delete "${name}"?`,
+    description: 'The skin, every variant in it and all of their images are removed from this browser. This cannot be undone.',
+    run: () => store.remove(id),
+  }
+}
+
+function askDeleteVariant() {
+  if (!project.value || !variant.value || !deletableVariant.value) return
+  const name = variant.value.name
+  const id = project.value.id
+  const parts = Object.keys(variant.value.parts).length
+  confirming.value = {
+    title: `Delete variant "${name}"?`,
+    description: parts
+      ? `Its ${parts} part${parts === 1 ? '' : 's'} and their images go with it. This cannot be undone.`
+      : 'This cannot be undone.',
+    run: async () => {
+      await store.removeVariant(id, name)
+      activeVariantName.value = project.value?.variants[0]?.name ?? 'base'
+    },
+  }
+}
+
+async function runConfirmed() {
+  if (!confirming.value) return
+  deleting.value = true
+  try {
+    await confirming.value.run()
+    confirming.value = null
+  }
+  catch (error) {
+    toast.add({
+      title: 'Could not delete',
+      description: error instanceof Error ? error.message : String(error),
+      color: 'error',
+    })
+  }
+  finally {
+    deleting.value = false
+  }
 }
 </script>
 
@@ -168,8 +284,11 @@ async function deleteProject() {
     <ClientOnly>
       <div class="mx-auto max-w-7xl px-6 py-10 lg:px-8">
         <div class="grid gap-8 lg:grid-cols-[22rem_1fr]">
-          <!-- Projects and preview -->
-          <aside class="flex flex-col gap-6">
+          <!-- Projects and preview. Once there is room for two columns this
+               column follows the reader down the page, so the preview stays in
+               sight while the parts list on the right is scrolled. It scrolls
+               within itself if it is ever taller than the window. -->
+          <aside class="flex flex-col gap-6 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto lg:pr-1">
             <div class="border border-default bg-default/60 p-4">
               <h2 class="mb-2 text-sm font-bold uppercase tracking-wide text-highlighted">
                 Guide
@@ -232,6 +351,99 @@ async function deleteProject() {
               </UButton>
             </div>
 
+            <!-- Everything that describes the skin as a whole: what it is
+                 called, what it is built on, which variant is being edited, and
+                 what to do with it when it is done. -->
+            <div
+              v-if="project"
+              class="border border-default bg-default/60 p-4"
+            >
+              <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-highlighted">
+                Skin details
+              </h2>
+
+              <div class="flex flex-col gap-4">
+                <UFormField label="Name" size="sm">
+                  <UInput
+                    v-model="project.name"
+                    size="sm"
+                    class="w-full"
+                    @blur="save"
+                  />
+                </UFormField>
+
+                <UFormField
+                  v-if="variant"
+                  label="Base skin"
+                  size="sm"
+                >
+                  <USelectMenu
+                    v-model="variant.overrideBaseSkin"
+                    :items="['Cat', 'Dog', 'Fox', 'Deer', 'Rabbit', 'Bear', 'Owl', 'Duck', 'Frog', 'Pig', 'Cow', 'Horse', 'Otter', 'Squirrel', 'Crow', 'Lion', 'Snake', 'Turtle', 'Chicken', 'Monkey']"
+                    size="sm"
+                    class="w-full"
+                    @update:model-value="save"
+                  />
+                </UFormField>
+
+                <!-- A skin can carry twenty-odd of these. As a row of pills they
+                     wrapped over several lines and pushed the preview down the
+                     page, so they are picked from a list instead. -->
+                <UFormField label="Variant" size="sm">
+                  <div class="flex gap-2">
+                    <USelectMenu
+                      v-model="activeVariantName"
+                      :items="variantNames"
+                      :virtualize="true"
+                      size="sm"
+                      class="min-w-0 flex-1"
+                    />
+                    <UButton
+                      icon="i-lucide-plus"
+                      size="sm"
+                      color="neutral"
+                      variant="subtle"
+                      aria-label="Add a variant"
+                      title="Add a variant"
+                      @click="addVariant"
+                    />
+                    <UButton
+                      icon="i-lucide-trash-2"
+                      size="sm"
+                      color="neutral"
+                      variant="ghost"
+                      aria-label="Delete this variant"
+                      :title="deletableVariant ? 'Delete this variant' : 'A skin needs its base variant'"
+                      :disabled="!deletableVariant"
+                      @click="askDeleteVariant"
+                    />
+                  </div>
+                </UFormField>
+
+                <div class="flex gap-2">
+                  <UButton
+                    icon="i-lucide-download"
+                    size="sm"
+                    class="flex-1 justify-center"
+                    :loading="exporting"
+                    :disabled="blocking.length > 0"
+                    @click="download"
+                  >
+                    Export zip
+                  </UButton>
+                  <UButton
+                    icon="i-lucide-trash-2"
+                    color="neutral"
+                    variant="ghost"
+                    size="sm"
+                    @click="askDeleteProject"
+                  >
+                    Delete
+                  </UButton>
+                </div>
+              </div>
+            </div>
+
             <div
               v-if="project"
               class="border border-default bg-default/60 p-4"
@@ -243,7 +455,7 @@ async function deleteProject() {
 
               <UFormField
                 v-if="colourSetCount > 1"
-                label="Colour set"
+                label="Color set"
                 size="sm"
                 class="mt-4"
               >
@@ -271,71 +483,6 @@ async function deleteProject() {
             </div>
 
             <template v-else>
-              <div class="flex flex-wrap items-center justify-between gap-4 border border-default bg-default/60 p-4">
-                <div class="flex items-center gap-3">
-                  <UInput
-                    v-model="project.name"
-                    size="sm"
-                    class="w-56"
-                    @blur="save"
-                  />
-                  <UFormField label="" size="sm">
-                    <USelectMenu
-                      v-if="variant"
-                      v-model="variant.overrideBaseSkin"
-                      :items="['Cat', 'Dog', 'Fox', 'Deer', 'Rabbit', 'Bear', 'Owl', 'Duck', 'Frog', 'Pig', 'Cow', 'Horse', 'Otter', 'Squirrel', 'Crow', 'Lion', 'Snake', 'Turtle', 'Chicken', 'Monkey']"
-                      size="sm"
-                      searchable
-                      class="w-40"
-                      @update:model-value="save"
-                    />
-                  </UFormField>
-                </div>
-
-                <div class="flex flex-wrap gap-2">
-                  <UButton
-                    icon="i-lucide-download"
-                    size="sm"
-                    :loading="exporting"
-                    :disabled="blocking.length > 0"
-                    @click="download"
-                  >
-                    Export zip
-                  </UButton>
-                  <UButton
-                    icon="i-lucide-trash-2"
-                    color="neutral"
-                    variant="ghost"
-                    size="sm"
-                    @click="deleteProject"
-                  >
-                    Delete
-                  </UButton>
-                </div>
-              </div>
-
-              <div class="flex flex-wrap items-center gap-2">
-                <UButton
-                  v-for="entry in project.variants"
-                  :key="entry.name"
-                  size="sm"
-                  :color="entry.name === variant?.name ? 'primary' : 'neutral'"
-                  :variant="entry.name === variant?.name ? 'solid' : 'ghost'"
-                  @click="activeVariantName = entry.name"
-                >
-                  {{ entry.name }}
-                </UButton>
-                <UButton
-                  icon="i-lucide-plus"
-                  size="sm"
-                  color="neutral"
-                  variant="ghost"
-                  @click="addVariant"
-                >
-                  Variant
-                </UButton>
-              </div>
-
               <UAlert
                 v-for="(issue, index) in issues"
                 :key="index"
@@ -354,6 +501,8 @@ async function deleteProject() {
                   size="sm"
                   color="neutral"
                   variant="subtle"
+                  :disabled="!freeSlot"
+                  :title="freeSlot ? 'Add a part' : 'Every follower slot is already used by a part'"
                   @click="addPart"
                 >
                   Add part
@@ -361,15 +510,22 @@ async function deleteProject() {
               </div>
 
               <div class="grid gap-4 xl:grid-cols-2">
+                <!-- Keyed by variant as well as part name: two variants often
+                     use the same part names, and reusing a row across a switch
+                     means patching every field in it against unrelated data
+                     instead of drawing a fresh one. -->
                 <BuilderPartEditor
                   v-for="[imageName, part] in partEntries"
-                  :key="imageName"
+                  :key="`${variant?.name}:${imageName}`"
                   :image-name="imageName"
                   :part="part"
                   :slot-options="slotOptions"
+                  :taken-slots="takenSlots"
                   @update="updatePart(imageName, $event)"
                   @rename="renamePart(imageName, $event)"
                   @remove="removePart(imageName)"
+                  @add-colour="addColour"
+                  @remove-colour="removeColour"
                 />
               </div>
 
@@ -377,7 +533,7 @@ async function deleteProject() {
                 v-if="!partEntries.length"
                 class="border border-dashed border-default p-8 text-center text-sm text-muted"
               >
-                No parts yet. Add one, pick a slot, and upload its PNG.
+                No parts yet. Add one, then choose its PNG and its slot.
               </p>
             </template>
           </main>
@@ -387,6 +543,14 @@ async function deleteProject() {
       <BuilderImportJsonLoaderModal
         v-model:open="importOpen"
         @imported="onImported"
+      />
+
+      <BuilderConfirmModal
+        v-model:open="confirmOpen"
+        :title="confirming?.title ?? ''"
+        :description="confirming?.description"
+        :loading="deleting"
+        @confirm="runConfirmed"
       />
 
       <template #fallback>

@@ -70,7 +70,7 @@ defineExpose({ baseSkins: preview.baseSkins })
 
       <div
         v-if="!unsupported && !preview.failed.value && !preview.ready.value"
-        class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-6 text-center"
+        class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-charcoal-950 p-6 text-center"
       >
         <UIcon
           name="i-lucide-loader-circle"

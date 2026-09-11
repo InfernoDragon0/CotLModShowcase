@@ -24,8 +24,7 @@ onMounted(() => onEnter(cardGrid, () => popIn('.tarot-card')))
       eyebrow="Supercharged Series"
       title="Unleash the Lamb"
       subtitle="Absurdly powerful tarot cards, and a flock that fights beside you."
-      skin="Lion"
-      animation="cheer"
+      :foreground="mod.logo"
     >
       <template #actions>
         <RibbonButton to="#tarots" size="lg">

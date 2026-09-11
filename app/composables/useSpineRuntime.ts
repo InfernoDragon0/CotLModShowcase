@@ -19,7 +19,6 @@ export interface SpinePlayerOptions {
   alpha?: boolean
   backgroundColor?: string
   showControls?: boolean
-  showLoading?: boolean
   defaultMix?: number
   viewport?: Record<string, unknown>
   success?: (player: any) => void
@@ -112,16 +111,26 @@ export function useSpineRuntime() {
     const spine = await loadRuntime()
     if (!spine) return null
 
-    return new spine.SpinePlayer(element, {
+    const player = new spine.SpinePlayer(element, {
       skelUrl: assets.skelUrl,
       atlasUrl: assets.atlasUrl,
       premultipliedAlpha: false,
       alpha: true,
       backgroundColor: '#00000000',
       showControls: false,
-      showLoading: false,
       ...options,
     })
+
+    // The 3.8 runtime spins its own logo on the canvas for the whole download
+    // and then fades it out over the skeleton, with no option to turn it off:
+    // `showLoading` belongs to a later runtime and was being passed here and
+    // silently ignored, so the callers' own loading messages were drawn on top
+    // of it. Whoever mounts the player owns that message, so the runtime's copy
+    // is switched off here, for every player.
+    const screen = player?.loadingScreen
+    if (screen && typeof screen.draw === 'function') screen.draw = () => {}
+
+    return player
   }
 
   return { loadRuntime, createPlayer, assets }

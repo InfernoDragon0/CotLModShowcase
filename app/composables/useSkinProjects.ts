@@ -179,9 +179,31 @@ export function useSkinProjects() {
     await persist()
   }
 
+  /**
+   * Drops one variant from a project, taking its part images with it.
+   *
+   * Removing it from the array alone would leave those images orphaned in
+   * IndexedDB, since `persist` only ever writes the variants it can still see.
+   */
+  async function removeVariant(projectId: string, variantName: string) {
+    const project = projects.value.find(entry => entry.id === projectId)
+    if (!project) return
+
+    const variant = project.variants.find(entry => entry.name === variantName)
+    if (!variant || project.variants.length < 2) return
+
+    for (const name of Object.keys(variant.parts)) {
+      await del(imageKey(projectId, variantName, name)).catch(() => {})
+    }
+
+    project.variants = project.variants.filter(entry => entry.name !== variantName)
+    project.updatedAt = Date.now()
+    await persist()
+  }
+
   function touch() {
     if (active.value) active.value.updatedAt = Date.now()
   }
 
-  return { projects, active, activeId, loaded, load, persist, create, remove, touch }
+  return { projects, active, activeId, loaded, load, persist, create, remove, removeVariant, touch }
 }

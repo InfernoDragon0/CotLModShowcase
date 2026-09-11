@@ -26,8 +26,7 @@ const activeShot = ref(0)
       eyebrow="CultTweaker 2.0 · pre-release 6"
       title="CultTweaker"
       subtitle="An in-game world editor, custom dungeons, custom spines, weapons, NPCs and quests. For Cult of the Lamb 1.5.26."
-      skin="Fox"
-      animation="build"
+      :foreground="mod.logo"
     >
       <template #actions>
         <RibbonButton
