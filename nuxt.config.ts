@@ -4,6 +4,27 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-07-22',
 
+  docus: {
+    /**
+     * The documentation assistant.
+     *
+     * `enabled` is set rather than left to Docus, which otherwise switches the
+     * assistant on only when it finds `AI_GATEWAY_API_KEY` or
+     * `VERCEL_OIDC_TOKEN` — the latter being injected by Vercel, which is why
+     * the live site had a working Ask AI button running on Gateway billing
+     * while local development had none at all. Stating it here makes the
+     * behaviour the same in both places.
+     *
+     * The model is served by `server/routes/__docus__/assistant.post.ts`
+     * through Google's own API, so no Gateway credentials are used. Change the
+     * model name below and that route follows it.
+     */
+    assistant: {
+      enabled: true,
+      model: 'gemini-3.8-flash',
+    },
+  },
+
   devtools: { enabled: true },
 
   /**
@@ -48,14 +69,14 @@ export default defineNuxtConfig({
 
   /**
    * Docus turns on nuxt-og-image, which rasterises a 1200x630 PNG per page at
-   * build time through satori + resvg-wasm. On this site that was 32 renders
-   * and it exhausted the V8 zone allocator ("Fatal process out of memory"),
-   * which is what made `npm run build` crawl and then die. The static og:image
-   * below gives link previews for a fraction of a second of build time.
-   *
-   * To get per-page cards back, delete this block and expect a slower build.
+   * build time through satori + resvg-wasm. All 32 pages at once exhausted the
+   * V8 zone allocator ("Fatal process out of memory") and killed the build, so
+   * it is switched off everywhere in `routeRules` below and switched back on
+   * for the home page alone — one render, which is the card that actually gets
+   * pasted into Discord and Twitter. Every other page keeps the static
+   * `og:image` declared under `app.head`.
    */
-  ogImage: { enabled: false },
+  ogImage: { enabled: true },
 
   // The site's own look is the dark one; light mode is there for anyone who
   // wants it, and the header toggle remembers the choice.
@@ -86,6 +107,10 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    // Only the home page renders an OG image; see the `ogImage` note above.
+    '/**': { ogImage: false },
+    '/': { ogImage: true },
+
     // Legacy URLs from the Nuxt 3 site
     '/minimods': { redirect: { to: '/mods/minimods', statusCode: 301 } },
     '/supercharged/tarots': { redirect: { to: '/mods/supercharged', statusCode: 301 } },
