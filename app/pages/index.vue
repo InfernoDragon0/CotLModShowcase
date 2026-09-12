@@ -17,6 +17,18 @@ useSeoMeta({
     'CultTweaker, the Supercharged series, CotL MiniMods and the upcoming MP Steam co-op mod — mods for Cult of the Lamb, with full documentation and a follower skin builder.',
 })
 
+/**
+ * The card Discord and Twitter unfurl, drawn to look like the hero above it.
+ *
+ * Only this route renders one — see the `ogImage` note in `nuxt.config.ts` for
+ * why the rest of the site keeps a static image instead.
+ */
+defineOgImage('Hero', {
+  eyebrow: 'Mods for Cult of the Lamb',
+  title: 'Reshape your Cult',
+  subtitle: 'World editors, overpowered tarots, an army of followers and lots of custom content.',
+})
+
 /** Destinations for the rail on the right, in the order they appear. */
 const navSections = computed(() => [
   { id: 'top', label: 'Top' },
