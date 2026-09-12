@@ -27,6 +27,12 @@ defineOgImage('Hero', {
   eyebrow: 'Mods for Cult of the Lamb',
   title: 'Reshape your Cult',
   subtitle: 'World editors, overpowered tarots, an army of followers and lots of custom content.',
+}, {
+  // The module declares 1200x600 by default; the card is drawn at the 1.91:1
+  // Discord and Twitter ask for, so the declared size has to follow it or the
+  // unfurl reserves the wrong box.
+  height: 630,
+  alt: 'Reshape your Cult - mods for Cult of the Lamb by InfernoDragon0',
 })
 
 /** Destinations for the rail on the right, in the order they appear. */

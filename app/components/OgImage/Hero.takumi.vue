@@ -2,11 +2,17 @@
 /**
  * The link-preview card, built to read like the site's own hero.
  *
- * Rendered by satori, which supports only a subset of CSS: flexbox and nothing
- * else for layout, every element with more than one child needs an explicit
- * `display: flex`, and there is no `gap` shorthand inheritance to rely on.
- * Styles are inline hex rather than theme classes because satori resolves
- * Tailwind separately from the app and would not see `crimson`/`parchment`.
+ * The `.takumi` suffix picks the renderer: nuxt-og-image v6 takes it from the
+ * filename, and takumi is the one Docus actually installs (`@takumi-rs/core`),
+ * so a `.satori.vue` here would fail the build for a missing dependency.
+ *
+ * Takumi lays out with flexbox only — every element holding more than one child
+ * needs an explicit `display: flex`. Two further limits shape what is below:
+ * the `background` shorthand is not parsed (gradients go through
+ * `background-image`), and `text-transform` is not applied, so the capitals are
+ * written out here instead. Colours are inline hex rather than theme classes
+ * because the renderer resolves Tailwind separately from the app and would not
+ * see `crimson`/`parchment`.
  */
 withDefaults(
   defineProps<{
@@ -41,7 +47,7 @@ withDefaults(
          off to the right so the badge still sits on the nebula. -->
     <div
       style="position: absolute; top: 0; left: 0; width: 1200px; height: 630px;
-             background: linear-gradient(90deg, rgba(20,18,18,0.94) 0%, rgba(20,18,18,0.86) 45%, rgba(20,18,18,0.55) 100%);"
+             background-image: linear-gradient(90deg, rgba(20,18,18,0.94) 0%, rgba(20,18,18,0.86) 45%, rgba(20,18,18,0.55) 100%);"
     />
 
     <div
@@ -49,17 +55,16 @@ withDefaults(
              width: 760px; height: 630px; padding: 0 0 0 72px;"
     >
       <div
-        style="display: flex; font-size: 24px; font-weight: 700; letter-spacing: 6px;
-               text-transform: uppercase; color: #ef4a52;"
+        style="display: flex; font-size: 24px; font-weight: 700; letter-spacing: 6px; color: #ef4a52;"
       >
-        {{ eyebrow }}
+        {{ eyebrow.toUpperCase() }}
       </div>
 
       <div
         style="display: flex; margin-top: 18px; font-size: 88px; font-weight: 800; line-height: 1.02;
-               letter-spacing: -2px; text-transform: uppercase; color: #f7f0e1;"
+               letter-spacing: -2px; color: #f7f0e1;"
       >
-        {{ title }}
+        {{ title.toUpperCase() }}
       </div>
 
       <div
@@ -68,14 +73,14 @@ withDefaults(
         {{ subtitle }}
       </div>
 
-      <!-- The ribbon from the hero's primary button, squared off: satori has no
-           clip-path, so the notched ends cannot come across. -->
+      <!-- The ribbon from the hero's primary button, squared off: there is no
+           clip-path here, so the notched ends cannot come across. -->
       <div style="display: flex; margin-top: 34px;">
         <div
           style="display: flex; padding: 14px 30px; background-color: #e5202a; color: #141212;
-                 font-size: 22px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;"
+                 font-size: 22px; font-weight: 700; letter-spacing: 3px;"
         >
-          cotlmod.infernodragon.net
+          COTLMOD.INFERNODRAGON.NET
         </div>
       </div>
     </div>
