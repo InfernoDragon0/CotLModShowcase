@@ -9,7 +9,11 @@ import { createPart, sanitiseFileName, validateVariant, type SkinVariant } from 
 import { SkinExportError, exportProject } from '~/utils/skinExport'
 import { triggerDownload } from '~/utils/skinImages'
 
-definePageMeta({ layout: 'showcase' })
+definePageMeta({
+  layout: 'showcase',
+  // The showcase is designed in the dark; only the documentation switches.
+  colorMode: 'dark',
+})
 
 useSeoMeta({
   title: 'Follower skin builder',
@@ -19,10 +23,29 @@ useSeoMeta({
 
 const store = useSkinProjects()
 const { options: slotOptions } = useFollowerSlots()
+
+/**
+ * Base forms to choose from.
+ *
+ * Read off the skeleton once the preview has it: every animal, every boss and
+ * the mutations, which is a few hundred entries rather than the handful this
+ * used to list. The short list below only stands in while the skeleton is still
+ * downloading, and covers the forms people reach for first.
+ */
+const FALLBACK_BASE_SKINS = [
+  'Cat', 'Dog', 'Fox', 'Deer', 'Rabbit', 'Bear', 'Owl', 'Duck', 'Frog', 'Pig',
+  'Cow', 'Horse', 'Otter', 'Squirrel', 'Crow', 'Lion', 'Snake', 'Turtle', 'Chicken', 'Monkey',
+]
+
+const skeletonBaseSkins = useBaseSkinList()
+
+const baseSkinOptions = computed(() =>
+  skeletonBaseSkins.value.length ? skeletonBaseSkins.value : FALLBACK_BASE_SKINS,
+)
 const toast = useToast()
 
 const importOpen = ref(false)
-const newSkinName = ref('')
+const newSkinOpen = ref(false)
 const colourSet = ref(0)
 const activeVariantName = ref('base')
 const exporting = ref(false)
@@ -58,9 +81,38 @@ const partEntries = computed(() => Object.entries(variant.value?.parts ?? {}))
  */
 const takenSlots = computed(() => partEntries.value.map(([, part]) => part.partName).filter(Boolean))
 
-const freeSlot = computed(() => {
+/** Every slot no part in this variant has claimed yet. */
+const freeSlots = computed(() => {
   const taken = new Set(takenSlots.value)
-  return slotOptions.value.find(option => !taken.has(option.value)) ?? null
+  return slotOptions.value.filter(option => !taken.has(option.value))
+})
+
+/**
+ * Adding a part reuses the slot picker rather than a plain menu: the same
+ * virtualised list and the same search box, which is what makes 175 entries
+ * usable at all.
+ *
+ * `multiple` is doing something other than its name suggests here. Reka's
+ * combobox closes on select only when it is single-select, so multiple is what
+ * keeps the list open while a run of parts is added. The selection is emptied
+ * as soon as it has been handled, so nothing ever shows as ticked and the list
+ * stays a list of what is left to add.
+ *
+ * The search term survives each pick too, which is the point of holding the
+ * menu open: search `HEAD`, then take the head slots one after another without
+ * retyping between them.
+ */
+const addPartSelection = ref<string[]>([])
+
+watch(addPartSelection, (values) => {
+  if (!values.length) return
+
+  for (const value of values) {
+    const slot = slotOptions.value.find(option => option.value === value)
+    if (slot) addPart(slot)
+  }
+
+  addPartSelection.value = []
 })
 
 const issues = computed(() => (variant.value ? validateVariant(variant.value) : []))
@@ -85,26 +137,56 @@ async function save() {
   }
 }
 
-function createProject() {
-  const name = newSkinName.value.trim()
-  if (!name) return
+/**
+ * The picker doubles as the way to start a skin, so its first row is an action
+ * rather than a project. The sentinel is caught on selection and never reaches
+ * `activeId`; underscores keep it clear of `crypto.randomUUID`, which only ever
+ * produces hex and dashes.
+ */
+const ADD_NEW_SKIN = '__add-new-skin'
+
+const skinItems = computed(() => [
+  { label: 'Add new skin', value: ADD_NEW_SKIN, icon: 'i-lucide-plus' },
+  ...store.projects.value.map(entry => ({ label: entry.name, value: entry.id })),
+])
+
+function onSkinPicked(value: string) {
+  if (value === ADD_NEW_SKIN) {
+    newSkinOpen.value = true
+    return
+  }
+  store.activeId.value = value
+}
+
+function createProject(name: string) {
   store.create(name)
-  newSkinName.value = ''
   activeVariantName.value = 'base'
   save()
 }
 
-function addPart() {
-  if (!variant.value || !freeSlot.value) return
-  let name = 'part'
-  let index = 1
-  while (variant.value.parts[name]) name = `part${++index}`
+function addPart(slot: { value: string, slotIndex: number }) {
+  if (!variant.value) return
 
-  // A new part starts on the first slot still going spare and carries the
-  // variant's colour count, so it is exportable the moment it is added.
-  variant.value.parts[name] = createPart(freeSlot.value.value, freeSlot.value.slotIndex, {
-    colorChoices: Array.from({ length: colourSetCount.value }, () => '#FFFFFF'),
-  })
+  // Named after the slot it fills. The key here is the PNG's file name, and
+  // now that the slot is chosen by hand rather than assigned, `part3` says
+  // nothing about what the file draws. The suffix only comes into play if a
+  // part was renamed onto this name by hand.
+  const base = sanitiseFileName(slot.value)
+  let name = base
+  let index = 2
+  while (variant.value.parts[name]) name = `${base}_${index++}`
+
+  // A new part carries the variant's colour count, so it is exportable the
+  // moment it is added. It goes in ahead of the others so it lands next to the
+  // button that made it, rather than below however many cards are already on
+  // the page. The game reads `PartConfigs` as a dictionary and draws by slot,
+  // so the order is ours.
+  variant.value.parts = {
+    [name]: createPart(slot.value, slot.slotIndex, {
+      colorChoices: Array.from({ length: colourSetCount.value }, () => '#FFFFFF'),
+    }),
+    ...variant.value.parts,
+  }
   save()
 }
 
@@ -175,14 +257,22 @@ function addVariant() {
   save()
 }
 
-function onImported(imported: SkinVariant, skinName: string) {
+/**
+ * An import always lands in a new project. A CultTweaker zip can hold several
+ * variants, so they all come across; the other two formats describe one.
+ */
+function onImported(imported: SkinVariant[], skinName: string) {
   const created = store.create(skinName)
-  created.variants = [imported]
-  activeVariantName.value = imported.name
+  created.variants = imported
+  activeVariantName.value = imported[0]?.name ?? 'base'
   save()
+
+  const parts = imported.reduce((total, entry) => total + Object.keys(entry.parts).length, 0)
   toast.add({
-    title: 'Skin converted',
-    description: `${Object.keys(imported.parts).length} parts imported from the JSONLoader skin.`,
+    title: 'Skin imported',
+    description: imported.length > 1
+      ? `${parts} parts across ${imported.length} variants.`
+      : `${parts} parts imported.`,
     color: 'success',
   })
 }
@@ -287,8 +377,19 @@ async function runConfirmed() {
           <!-- Projects and preview. Once there is room for two columns this
                column follows the reader down the page, so the preview stays in
                sight while the parts list on the right is scrolled. It scrolls
-               within itself if it is ever taller than the window. -->
-          <aside class="flex flex-col gap-6 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto lg:pr-1">
+               within itself if it is ever taller than the window.
+
+               `scrollbar-gutter: stable` is load-bearing, not decoration. The
+               preview inside this column is `aspect-square w-full`, so its
+               height is a function of the column's width. With a plain
+               `overflow-y: auto` the two feed back on each other: content
+               overflows, a scrollbar appears and takes ~15px of width, the
+               square preview gets 15px shorter, the content now fits, the
+               scrollbar goes away, the preview grows back — forever, flickering
+               the bar and reflowing the Guide text with it. Reserving the
+               gutter keeps the content box one width whether the bar is drawn
+               or not, which breaks the loop at its source. -->
+          <aside class="flex flex-col gap-6 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto lg:pr-1 lg:scrollbar-gutter-stable">
             <div class="border border-default bg-default/60 p-4">
               <h2 class="mb-2 text-sm font-bold uppercase tracking-wide text-highlighted">
                 Guide
@@ -312,31 +413,18 @@ async function runConfirmed() {
                 Skins
               </h2>
 
+              <!-- Starting a skin lives in the picker rather than beside it:
+                   the two were always used one instead of the other, and the
+                   name field sat there taking up room the rest of the time. -->
               <USelectMenu
-                v-if="store.projects.value.length"
-                v-model="store.activeId.value"
-                :items="store.projects.value.map(entry => ({ label: entry.name, value: entry.id }))"
+                :model-value="store.activeId.value ?? undefined"
+                :items="skinItems"
                 value-key="value"
                 size="sm"
                 class="w-full"
+                placeholder="No skins yet"
+                @update:model-value="onSkinPicked(String($event))"
               />
-
-              <div class="mt-4 flex gap-2">
-                <UInput
-                  v-model="newSkinName"
-                  placeholder="New skin name"
-                  size="sm"
-                  class="flex-1"
-                  @keydown.enter="createProject"
-                />
-                <UButton
-                  icon="i-lucide-plus"
-                  size="sm"
-                  :disabled="!newSkinName.trim()"
-                  aria-label="Create skin"
-                  @click="createProject"
-                />
-              </div>
 
               <UButton
                 icon="i-lucide-import"
@@ -347,7 +435,7 @@ async function runConfirmed() {
                 class="mt-3"
                 @click="importOpen = true"
               >
-                Import a JSONLoader skin
+                Import a skin
               </UButton>
             </div>
 
@@ -379,7 +467,8 @@ async function runConfirmed() {
                 >
                   <USelectMenu
                     v-model="variant.overrideBaseSkin"
-                    :items="['Cat', 'Dog', 'Fox', 'Deer', 'Rabbit', 'Bear', 'Owl', 'Duck', 'Frog', 'Pig', 'Cow', 'Horse', 'Otter', 'Squirrel', 'Crow', 'Lion', 'Snake', 'Turtle', 'Chicken', 'Monkey']"
+                    :items="baseSkinOptions"
+                    :virtualize="true"
                     size="sm"
                     class="w-full"
                     @update:model-value="save"
@@ -496,17 +585,25 @@ async function runConfirmed() {
                 <h2 class="text-sm font-bold uppercase tracking-wide text-highlighted">
                   Parts
                 </h2>
-                <UButton
-                  icon="i-lucide-plus"
+                <!-- Same virtualised, searchable list as the per-part slot
+                     picker, and it stays open as parts are taken off it so a
+                     whole skin can be laid out in one pass. -->
+                <USelectMenu
+                  v-model="addPartSelection"
+                  multiple
+                  :items="freeSlots"
+                  value-key="value"
+                  :virtualize="true"
+                  :reset-search-term-on-select="false"
                   size="sm"
-                  color="neutral"
-                  variant="subtle"
-                  :disabled="!freeSlot"
-                  :title="freeSlot ? 'Add a part' : 'Every follower slot is already used by a part'"
-                  @click="addPart"
-                >
-                  Add part
-                </UButton>
+                  icon="i-lucide-plus"
+                  placeholder="Add part"
+                  class="w-56"
+                  :disabled="!freeSlots.length"
+                  :title="freeSlots.length
+                    ? `Add a part: ${freeSlots.length} slots still free`
+                    : 'Every follower slot is already used by a part'"
+                />
               </div>
 
               <div class="grid gap-4 xl:grid-cols-2">
@@ -540,7 +637,12 @@ async function runConfirmed() {
         </div>
       </div>
 
-      <BuilderImportJsonLoaderModal
+      <BuilderNewSkinModal
+        v-model:open="newSkinOpen"
+        @create="createProject"
+      />
+
+      <BuilderImportSkinModal
         v-model:open="importOpen"
         @imported="onImported"
       />

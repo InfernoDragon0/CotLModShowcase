@@ -35,14 +35,26 @@ describe('exportProject', () => {
     const zip = await JSZip.loadAsync(await blob.arrayBuffer())
     const names = Object.keys(zip.files).filter(name => !zip.files[name]!.dir)
 
-    expect(names).toContain('FollowerSkins/My_Skin/base/config.json')
-    expect(names).toContain('FollowerSkins/My_Skin/base/part2.png')
+    expect(names).toContain('My_Skin/base/config.json')
+    expect(names).toContain('My_Skin/base/part2.png')
+  })
+
+  /**
+   * The skin folder is the root of the archive. Wrapping it in a `FollowerSkins`
+   * of its own means unzipping into the game's `FollowerSkins` produces a nested
+   * `FollowerSkins/FollowerSkins/`, which the mod does not read.
+   */
+  it('does not wrap the skin in a FollowerSkins folder', async () => {
+    const { blob } = await exportProject(project())
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer())
+
+    expect(Object.keys(zip.files).some(name => /^FollowerSkins\//i.test(name))).toBe(false)
   })
 
   it('writes the PascalCase config the mod deserialises', async () => {
     const { blob } = await exportProject(project())
     const zip = await JSZip.loadAsync(await blob.arrayBuffer())
-    const config = JSON.parse(await zip.file('FollowerSkins/My_Skin/base/config.json')!.async('string'))
+    const config = JSON.parse(await zip.file('My_Skin/base/config.json')!.async('string'))
 
     expect(config.OverrideBaseSkin).toBe('Cat')
     expect(config.PartConfigs.part2).toMatchObject({
@@ -66,8 +78,8 @@ describe('exportProject', () => {
     const { blob } = await exportProject(withVariant)
     const zip = await JSZip.loadAsync(await blob.arrayBuffer())
 
-    expect(zip.file('FollowerSkins/My_Skin/variant1/config.json')).toBeTruthy()
-    expect(zip.file('FollowerSkins/My_Skin/variant1/part2.png')).toBeTruthy()
+    expect(zip.file('My_Skin/variant1/config.json')).toBeTruthy()
+    expect(zip.file('My_Skin/variant1/part2.png')).toBeTruthy()
   })
 
   it('refuses to export a variant the game would reject', async () => {
@@ -83,7 +95,7 @@ describe('exportProject', () => {
   it('decodes part images back to real PNG bytes', async () => {
     const { blob } = await exportProject(project())
     const zip = await JSZip.loadAsync(await blob.arrayBuffer())
-    const bytes = await zip.file('FollowerSkins/My_Skin/base/part2.png')!.async('uint8array')
+    const bytes = await zip.file('My_Skin/base/part2.png')!.async('uint8array')
 
     // PNG magic number.
     expect([...bytes.slice(0, 4)]).toEqual([0x89, 0x50, 0x4E, 0x47])

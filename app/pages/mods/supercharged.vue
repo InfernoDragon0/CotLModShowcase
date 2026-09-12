@@ -2,7 +2,11 @@
 import { tarotSets, followerBoosts, followerStructures } from '~/data/supercharged'
 import { findMod } from '~/data/mods'
 
-definePageMeta({ layout: 'showcase' })
+definePageMeta({
+  layout: 'showcase',
+  // The showcase is designed in the dark; only the documentation switches.
+  colorMode: 'dark',
+})
 
 const mod = findMod('supercharged')!
 

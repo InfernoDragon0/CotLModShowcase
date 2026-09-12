@@ -3,6 +3,7 @@ import {
   buildConfigJson,
   convertJsonLoader,
   normalizeHex,
+  parseConfigJson,
   parsePair,
   parseRect,
   sanitiseFileName,
@@ -192,6 +193,123 @@ describe('buildConfigJson', () => {
   })
 })
 
+describe('parseConfigJson', () => {
+  const config = {
+    OverrideBaseSkin: 'Fox',
+    PartConfigs: {
+      head: {
+        SlotIndex: 89,
+        PartName: 'HEAD_SKIN_BTM',
+        ScaleX: 1.3,
+        ScaleY: 1.3,
+        Rotation: -90,
+        OffsetX: 2,
+        OffsetY: -4,
+        HideSlot: false,
+        ColorChoices: ['#fff', '#123456'],
+      },
+    },
+  }
+
+  it('reads a config back into a variant', () => {
+    const { variant } = parseConfigJson(config, 'base', slots)
+    expect(variant.name).toBe('base')
+    expect(variant.overrideBaseSkin).toBe('Fox')
+    expect(variant.parts.head).toMatchObject({
+      slotIndex: 89,
+      partName: 'HEAD_SKIN_BTM',
+      scaleX: 1.3,
+      offsetY: -4,
+      hideSlot: false,
+    })
+  })
+
+  it('expands short hex so the Spine runtime can parse it', () => {
+    const { variant } = parseConfigJson(config, 'base', slots)
+    expect(variant.parts.head!.colorChoices).toEqual(['#FFFFFF', '#123456'])
+  })
+
+  it('round-trips through buildConfigJson', () => {
+    const variant: SkinVariant = {
+      name: 'base',
+      overrideBaseSkin: 'Cat',
+      parts: {
+        part2: {
+          slotIndex: 89,
+          partName: 'HEAD_SKIN_BTM',
+          scaleX: 1.3,
+          scaleY: 1.3,
+          rotation: -90,
+          offsetX: 0,
+          offsetY: 0,
+          hideSlot: false,
+          colorChoices: ['#FFFFFF'],
+        },
+      },
+    }
+    expect(parseConfigJson(buildConfigJson(variant), 'base', slots).variant).toEqual(variant)
+  })
+
+  it('matches keys case-insensitively, the way Newtonsoft does', () => {
+    const { variant } = parseConfigJson(
+      { overridebaseskin: 'Deer', partconfigs: { head: { partname: 'HEAD_SKIN_TOP', slotindex: 91 } } },
+      'base',
+      slots,
+    )
+    expect(variant.overrideBaseSkin).toBe('Deer')
+    expect(variant.parts.head!.partName).toBe('HEAD_SKIN_TOP')
+  })
+
+  it('falls back to the part defaults for missing transform fields', () => {
+    const { variant } = parseConfigJson(
+      { PartConfigs: { head: { PartName: 'HEAD_SKIN_BTM' } } },
+      'base',
+      slots,
+    )
+    expect(variant.parts.head).toMatchObject({ scaleX: 1, scaleY: 1, rotation: -90, offsetX: 0 })
+  })
+
+  it('re-resolves a stale slot index from the part name', () => {
+    const { variant, issues } = parseConfigJson(
+      { PartConfigs: { head: { PartName: 'HEAD_SKIN_BTM', SlotIndex: 12 } } },
+      'base',
+      slots,
+    )
+    expect(variant.parts.head!.slotIndex).toBe(89)
+    expect(issues.some(issue => issue.message.includes('different slot'))).toBe(true)
+  })
+
+  it('keeps the declared index when the name is not in the slot table', () => {
+    const { variant } = parseConfigJson(
+      { PartConfigs: { head: { PartName: 'GONE_FROM_GAME', SlotIndex: 12 } } },
+      'base',
+      slots,
+    )
+    expect(variant.parts.head!.slotIndex).toBe(12)
+  })
+
+  it('pads parts that declare fewer colours than the rest', () => {
+    const { variant, issues } = parseConfigJson(
+      {
+        PartConfigs: {
+          head: { PartName: 'HEAD_SKIN_BTM', ColorChoices: ['#000000', '#111111'] },
+          arm: { PartName: 'ARM_LEFT_SKIN', ColorChoices: ['#222222'] },
+        },
+      },
+      'base',
+      slots,
+    )
+    expect(variant.parts.arm!.colorChoices).toEqual(['#222222', '#FFFFFF'])
+    expect(issues.some(issue => issue.message.includes('padded'))).toBe(true)
+  })
+
+  it('rejects a file that is not a CultTweaker config', () => {
+    expect(() => parseConfigJson({ overrides: [] }, 'base', slots)).toThrow(/PartConfigs/)
+    expect(() => parseConfigJson('nope', 'base', slots)).toThrow()
+    expect(() => parseConfigJson({ PartConfigs: {} }, 'base', slots)).toThrow(/no parts/)
+  })
+})
+
 describe('validateVariant', () => {
   function variantWith(parts: SkinVariant['parts']): SkinVariant {
     return { name: 'base', overrideBaseSkin: 'Cat', parts }
@@ -236,10 +354,14 @@ describe('validateVariant', () => {
     expect(issues.some(issue => issue.message.includes('invalid colour'))).toBe(true)
   })
 
-  it('warns when a visible part has no image', () => {
-    const { image, ...noImage } = base
-    const issues = validateVariant(variantWith({ a: noImage }))
-    expect(issues.some(issue => issue.level === 'warning')).toBe(true)
+  /**
+   * A part with no image recolours the base skin's own artwork, which is a
+   * legitimate thing to export. The part's card carries a "Color only" badge
+   * instead, where it points at the part rather than naming it up top.
+   */
+  it('says nothing about a part with no image', () => {
+    const { image: _image, ...noImage } = base
+    expect(validateVariant(variantWith({ a: noImage }))).toEqual([])
   })
 
   it('rejects an empty variant', () => {

@@ -10,6 +10,17 @@
 
 import { normalizeHex, type SkinVariant } from '~/utils/followerSkin'
 import { loadImage } from '~/utils/skinImages'
+import type { FollowerSlot } from './useFollowerSlots'
+
+/**
+ * Base skins read off the loaded skeleton, shared with the rest of the page.
+ *
+ * Empty until the preview has the skeleton in memory, which is what lets the
+ * builder fall back to a short hand-written list in the meantime.
+ */
+export function useBaseSkinList() {
+  return useState<string[]>('follower-base-skins', () => [])
+}
 
 export interface PreviewHandle {
   mount: (element: HTMLElement) => Promise<void>
@@ -27,6 +38,8 @@ export interface PreviewHandle {
 
 export function useSkinPreview(): PreviewHandle {
   const { createPlayer } = useSpineRuntime()
+  const baseSkinSlots = useBaseSkinSlots()
+  const sharedBaseSkins = useBaseSkinList()
 
   const ready = ref(false)
   const failed = ref(false)
@@ -38,8 +51,19 @@ export function useSkinPreview(): PreviewHandle {
   let spine: any = null
   /** GL textures created for the current preview, disposed on each rebuild. */
   let textures: any[] = []
+  /**
+   * Decoded part images, keyed by the data URL they came from.
+   *
+   * `apply` runs on every edit and on every skin switch, and decoding a
+   * skin's worth of base64 PNGs from scratch each time is what made both of
+   * those stall. A data URL always decodes to the same bitmap, so the decode
+   * is paid for once and a rebuild after changing a rotation costs nothing.
+   */
+  const decoded = new Map<string, HTMLImageElement>()
   /** Kept so the panel can rebuild the player after a failure. */
   let host: HTMLElement | null = null
+  /** What `apply` last drew, so tints can be restored after a pose reset. */
+  let applied: { variant: SkinVariant, colourSet: number } | null = null
   let watchdog: ReturnType<typeof setInterval> | undefined
 
   function stopWatchdog() {
@@ -104,10 +128,8 @@ export function useSkinPreview(): PreviewHandle {
           spine = window.spine
           const data = instance.skeleton.data
           animations.value = data.animations.map((animation: any) => animation.name).sort()
-          baseSkins.value = data.skins
-            .map((skin: any) => skin.name)
-            .filter((name: string) => name !== 'default')
-            .sort()
+          baseSkins.value = baseSkinsOf(data)
+          sharedBaseSkins.value = baseSkins.value
           stopWatchdog()
           ready.value = true
         },
@@ -163,6 +185,65 @@ export function useSkinPreview(): PreviewHandle {
     return region
   }
 
+  /**
+   * Skins worth offering as a base form, in the order they should be listed.
+   *
+   * The skeleton carries 623 skins and most are not follower forms at all:
+   * `Drinks/Beer` has six attachments, `Meals/*` thirty-nine, `Hats/*`
+   * nineteen. A base skin has to dress a whole follower, so the cut is at a
+   * hundred attachments — which keeps all 442 animal forms, every `Boss *`,
+   * the cult leaders and the `Mutation/*` set, and drops the props.
+   *
+   * Ordered followers first, then bosses, then the prefixed sets, because the
+   * common case is picking an animal and the rest are a long tail.
+   */
+  function baseSkinsOf(data: any): string[] {
+    const rank = (name: string) => (name.startsWith('Boss ') ? 1 : name.includes('/') ? 2 : 0)
+
+    return data.skins
+      .filter((skin: any) => {
+        // `_custom` is the skeleton's own scratch skin, and it would otherwise
+        // sort above everything else.
+        if (!skin?.name || skin.name === 'default' || skin.name.startsWith('_')) return false
+        let count = 0
+        skin.attachments?.forEach((slotMap: object | undefined) => {
+          if (slotMap) count += Object.keys(slotMap).length
+        })
+        return count >= 100
+      })
+      .map((skin: any) => skin.name as string)
+      .sort((a: string, b: string) => rank(a) - rank(b) || a.localeCompare(b))
+  }
+
+  /**
+   * Every `(slot index, attachment name)` a skin carries.
+   *
+   * spine-ts keys `Skin.attachments` by slot index, each entry an object of
+   * attachment name to attachment — the same walk `FollowerSlotDumper` does in
+   * the mod, which is what `followerSlots.json` is a snapshot of.
+   */
+  function attachmentsOf(skin: any): FollowerSlot[] {
+    const out: FollowerSlot[] = []
+    skin.attachments?.forEach((slotMap: Record<string, unknown> | undefined, slotIndex: number) => {
+      if (!slotMap) return
+      for (const name of Object.keys(slotMap)) out.push({ SlotIndex: slotIndex, PartName: name })
+    })
+    return out
+  }
+
+  /** Decodes a part image, reusing the bitmap when it has been seen before. */
+  async function decode(dataUrl: string): Promise<HTMLImageElement> {
+    const cached = decoded.get(dataUrl)
+    if (cached) return cached
+
+    const image = await loadImage(dataUrl)
+    // A session spent editing several skins would otherwise hold every bitmap
+    // it ever drew. Dropping the lot is fine: the next rebuild decodes again.
+    if (decoded.size > 200) decoded.clear()
+    decoded.set(dataUrl, image)
+    return image
+  }
+
   async function apply(variant: SkinVariant, colourSet: number) {
     if (!player || !ready.value || !spine) return
 
@@ -170,6 +251,27 @@ export function useSkinPreview(): PreviewHandle {
     const baseSkin
       = skeleton.data.findSkin(variant.overrideBaseSkin) ?? skeleton.data.findSkin('Cat')
     if (!baseSkin) return
+
+    // The slot picker follows whichever base skin is selected, the way the
+    // in-game editor does, so publish this skin's attachments as they resolve.
+    baseSkinSlots.value = attachmentsOf(baseSkin)
+
+    // Decoding happens up front and all at once. Awaiting each image inside the
+    // loop below serialised a skin's worth of decodes behind one another, and
+    // with twenty parts that is what the eye reads as the stall on switching.
+    const images = new Map<string, HTMLImageElement>()
+    await Promise.all(
+      Object.entries(variant.parts)
+        .filter(([, part]) => !part.hideSlot && part.image && part.slotIndex >= 0)
+        .map(async ([imageName, part]) => {
+          try {
+            images.set(imageName, await decode(part.image!.dataUrl))
+          }
+          catch (error) {
+            console.error(`[skin-preview] could not decode part "${imageName}"`, error)
+          }
+        }),
+    )
 
     // Textures from the previous build are no longer referenced once the new
     // skin replaces it, so release them before uploading more.
@@ -202,8 +304,10 @@ export function useSkinPreview(): PreviewHandle {
         continue
       }
 
+      const image = images.get(imageName)
+      if (!image) continue
+
       try {
-        const image = await loadImage(part.image.dataUrl)
         const region = makeRegion(image, `${variant.name}_${imageName}`)
 
         if (baseAttachment instanceof spine.MeshAttachment) {
@@ -265,6 +369,7 @@ export function useSkinPreview(): PreviewHandle {
 
     skeleton.setSkin(skin)
     skeleton.setSlotsToSetupPose()
+    applied = { variant, colourSet }
     applyColours(variant, colourSet)
   }
 
@@ -288,6 +393,12 @@ export function useSkinPreview(): PreviewHandle {
     if (!player || !ready.value) return
     try {
       player.setAnimation(name, true)
+
+      // SpinePlayer measures the new animation's bounds before playing it, and
+      // measures from the setup pose — which puts every slot tint back to
+      // white. Attachments live in the skin and survive that, so the images
+      // stay; the colours are on the slots and have to be set again.
+      if (applied) applyColours(applied.variant, applied.colourSet)
     }
     catch (error) {
       console.error('[skin-preview] unknown animation', name, error)
@@ -309,6 +420,8 @@ export function useSkinPreview(): PreviewHandle {
   function dispose() {
     stopWatchdog()
     disposeTextures()
+    decoded.clear()
+    applied = null
     try {
       // SpinePlayer has no dispose; stopping the render loop releases it.
       player?.stopRendering?.()

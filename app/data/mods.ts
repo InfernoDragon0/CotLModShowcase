@@ -204,16 +204,14 @@ export const mods: Mod[] = [
         icon: 'i-simple-icons-discord',
       },
     ],
+    // One shot for now. `showcase-2.png` is currently a byte-for-byte copy of
+    // this one, and the showcase renders its detail row only when there is more
+    // than one entry, so a second slot here would just repeat the picture. Add
+    // it back once there is a genuinely different screenshot to put in it.
     gallery: [
       {
         src: '/images/mpsteam/showcase-1.png',
-        alt: 'Two lambs running a dungeon together',
-        pending: true,
-      },
-      {
-        src: '/images/mpsteam/showcase-2.png',
-        alt: 'The lobby screen with a friend joining',
-        pending: true,
+        alt: 'Two players crossing a bridge together in a dark forest, their names above them and the host\'s connection shown in the corner',
       },
     ],
   },

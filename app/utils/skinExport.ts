@@ -20,13 +20,19 @@ export interface ExportResult {
  * Builds a zip laid out as:
  *
  * ```text
- * FollowerSkins/<skin>/base/config.json
- * FollowerSkins/<skin>/base/<part>.png
- * FollowerSkins/<skin>/<variant>/…
+ * <skin>/base/config.json
+ * <skin>/base/<part>.png
+ * <skin>/<variant>/…
  * ```
  *
- * Unzip it into `BepInEx/plugins/CultTweaker/` and the form appears in game.
- * Throws when a variant breaks a rule the game enforces at load time.
+ * The skin folder is the root of the archive rather than sitting under a
+ * `FollowerSkins/` of its own: people unzip these straight into the
+ * `FollowerSkins` folder they already have, and a wrapper of the same name just
+ * produced a nested `FollowerSkins/FollowerSkins/` that the mod never reads.
+ *
+ * Unzip it into `BepInEx/plugins/CultTweaker/FollowerSkins/` and the form
+ * appears in game. Throws when a variant breaks a rule the game enforces at
+ * load time.
  */
 export async function exportProject(project: SkinProject): Promise<ExportResult> {
   const issues = project.variants.flatMap(validateVariant)
@@ -37,7 +43,7 @@ export async function exportProject(project: SkinProject): Promise<ExportResult>
 
   const zip = new JSZip()
   const skinName = sanitiseFileName(project.name)
-  const root = zip.folder('FollowerSkins')!.folder(skinName)!
+  const root = zip.folder(skinName)!
 
   for (const variant of project.variants) {
     const folder = root.folder(sanitiseFileName(variant.name))!
@@ -52,14 +58,14 @@ export async function exportProject(project: SkinProject): Promise<ExportResult>
   zip.file(
     'README.txt',
     [
-      `${project.name} — a CultTweaker follower form.`,
+      `${project.name}: CultTweaker follower form.`,
       '',
-      'Unzip this so the folders land in:',
-      '  BepInEx/plugins/CultTweaker/FollowerSkins/',
+      'Unzip this so the folders looks like:',
+      `  BepInEx/plugins/CultTweaker/FollowerSkins/${skinName}`,
       '',
       'Then start the game. The form appears when indoctrinating a follower.',
       '',
-      'Made with the skin builder at https://cotlmod.infernodragon.net/builder',
+      'Made with Skin Builder at https://cotlmod.infernodragon.net/builder',
     ].join('\n'),
   )
 

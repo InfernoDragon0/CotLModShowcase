@@ -34,6 +34,10 @@ const sizes = computed(() => (isFeature.value ? '100vw lg:600px' : '50vw lg:300p
 
 <template>
   <figure class="relative aspect-video w-full overflow-hidden border border-default bg-charcoal-950">
+    <!-- Quality 75 rather than webp's usual 82: game screenshots are flat-shaded
+         with hard edges, which webp handles well. Measured across the showcase
+         shots it lands about 20% smaller with nothing visible at the size these
+         are actually displayed. -->
     <NuxtImg
       v-if="!shot.pending"
       :src="shot.src"
@@ -41,7 +45,7 @@ const sizes = computed(() => (isFeature.value ? '100vw lg:600px' : '50vw lg:300p
       class="size-full object-cover"
       :sizes="sizes"
       format="webp"
-      :quality="82"
+      :quality="75"
       :loading="eager ? 'eager' : 'lazy'"
     />
 

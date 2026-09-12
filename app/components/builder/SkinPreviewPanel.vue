@@ -77,11 +77,10 @@ defineExpose({ baseSkins: preview.baseSkins })
           class="size-6 animate-spin text-primary"
         />
         <p class="text-sm font-semibold text-highlighted">
-          Loading the follower
+          Loading Preview
         </p>
         <p class="text-xs text-muted">
-          The skeleton and its atlas are about 43 MB. They download once, then
-          the browser keeps them. Everything else on this page works meanwhile.
+          First load may take awhile!
         </p>
         <p
           v-if="preview.progress.value.total"

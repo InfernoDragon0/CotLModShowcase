@@ -128,6 +128,30 @@ export default defineAppConfig({
       },
     },
 
+    /*
+     * The search palette is mostly a list of documentation, so it reads as
+     * documentation. Left alone it inherits the site's warm tokens, and the
+     * three that carry the result text - `text-muted` (#c4b184) and
+     * `text-dimmed` (#a8946a) in particular - land on a gold that belongs on
+     * the showcase pages rather than over a page of search hits. These are the
+     * same two greys the docs body and headings use, with the lower rungs at
+     * reduced opacity so the title still sits above its path and excerpt.
+     */
+    commandPalette: {
+      slots: {
+        label: 'dark:text-docshead',
+        itemLabelBase: 'dark:text-docshead',
+        itemLabelPrefix: 'dark:text-docsbody',
+        itemLabel: 'dark:text-docsbody/70',
+        itemLabelSuffix: 'dark:text-docsbody/70',
+        itemDescription: 'dark:text-docsbody',
+        empty: 'dark:text-docsbody',
+        // The placeholder is the palette's own input, so it is safe to reach
+        // into here; styling `input` globally would follow the builder around.
+        input: 'dark:[&_input]:placeholder:text-docsbody/70',
+      },
+    },
+
     /* The documentation page title and its standfirst are rendered by the page
        header rather than by prose, so they need the same two colours. */
     pageHeader: {

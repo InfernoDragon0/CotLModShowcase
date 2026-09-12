@@ -2,7 +2,11 @@
 import { features, howItRuns, requirements } from '~/data/mpsteam'
 import { findMod } from '~/data/mods'
 
-definePageMeta({ layout: 'showcase' })
+definePageMeta({
+  layout: 'showcase',
+  // The showcase is designed in the dark; only the documentation switches.
+  colorMode: 'dark',
+})
 
 const mod = findMod('mpsteam')!
 

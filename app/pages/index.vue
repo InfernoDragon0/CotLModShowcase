@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { mods } from '~/data/mods'
 
-definePageMeta({ layout: 'showcase' })
+definePageMeta({
+  layout: 'showcase',
+  // The showcase is designed in the dark; only the documentation switches.
+  colorMode: 'dark',
+})
 
 // One wheel gesture moves one section, across the hero and the four mods. The
 // skin builder and support blocks below are left to scroll normally.

@@ -71,6 +71,11 @@ export function createPart(partName: string, slotIndex: number, patch: Partial<P
   }
 }
 
+export interface ValidationIssue {
+  level: 'error' | 'warning'
+  message: string
+}
+
 /**
  * Builds the `config.json` payload for one variant.
  *
@@ -100,9 +105,115 @@ export function buildConfigJson(variant: SkinVariant): Record<string, unknown> {
   }
 }
 
-export interface ValidationIssue {
-  level: 'error' | 'warning'
-  message: string
+/** Looks a key up ignoring case, the way Newtonsoft does when deserialising. */
+function field(source: Record<string, unknown>, name: string): unknown {
+  if (name in source) return source[name]
+  const lower = name.toLowerCase()
+  const key = Object.keys(source).find(entry => entry.toLowerCase() === lower)
+  return key === undefined ? undefined : source[key]
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+/** Config files in the wild carry numbers as strings often enough to matter. */
+function num(value: unknown, fallback: number): number {
+  const parsed = typeof value === 'string' ? Number(value) : value
+  return typeof parsed === 'number' && Number.isFinite(parsed) ? parsed : fallback
+}
+
+function bool(value: unknown): boolean {
+  return value === true || (typeof value === 'string' && value.toLowerCase() === 'true')
+}
+
+/**
+ * Reads a CultTweaker `config.json` back into a variant: the inverse of
+ * `buildConfigJson`, used when importing an existing follower form.
+ *
+ * `slots` re-resolves every `PartName` against the slot table dumped from the
+ * installed game. A config written against an older build can carry a
+ * `SlotIndex` that has since moved, and the name is the stable half of the
+ * pair, so it wins whenever the two disagree.
+ */
+export function parseConfigJson(
+  raw: unknown,
+  variantName: string,
+  slots?: Map<string, number>,
+): { variant: SkinVariant, issues: ValidationIssue[] } {
+  if (!isRecord(raw)) throw new Error('That config.json is not a JSON object.')
+
+  const partConfigs = field(raw, 'PartConfigs')
+  if (!isRecord(partConfigs)) {
+    throw new Error('No "PartConfigs" found, so this is not a CultTweaker config.json.')
+  }
+
+  const issues: ValidationIssue[] = []
+  const parts: Record<string, PartConfig> = {}
+  const remapped: string[] = []
+
+  for (const [imageName, value] of Object.entries(partConfigs)) {
+    if (!isRecord(value)) {
+      issues.push({ level: 'warning', message: `Part "${imageName}" is not an object and was skipped.` })
+      continue
+    }
+
+    const partName = String(field(value, 'PartName') ?? '')
+    const declared = num(field(value, 'SlotIndex'), -1)
+    const resolved = slots?.get(partName)
+    if (resolved !== undefined && resolved !== declared) remapped.push(imageName)
+
+    const colours = field(value, 'ColorChoices')
+    parts[imageName] = {
+      partName,
+      slotIndex: resolved ?? declared,
+      scaleX: num(field(value, 'ScaleX'), PART_DEFAULTS.scaleX),
+      scaleY: num(field(value, 'ScaleY'), PART_DEFAULTS.scaleY),
+      rotation: num(field(value, 'Rotation'), PART_DEFAULTS.rotation),
+      offsetX: num(field(value, 'OffsetX'), PART_DEFAULTS.offsetX),
+      offsetY: num(field(value, 'OffsetY'), PART_DEFAULTS.offsetY),
+      hideSlot: bool(field(value, 'HideSlot')),
+      colorChoices: Array.isArray(colours) && colours.length
+        ? colours.map(entry => normalizeHex(String(entry)))
+        : ['#FFFFFF'],
+    }
+  }
+
+  const entries = Object.values(parts)
+  if (!entries.length) throw new Error('That config.json lists no parts in "PartConfigs".')
+
+  // The game rejects a form whose parts disagree on this, and a hand-edited
+  // config drifts easily, so pad here instead of making it the user's problem.
+  const widest = Math.max(...entries.map(part => part.colorChoices.length))
+  const short = entries.filter(part => part.colorChoices.length < widest).length
+  for (const part of entries) {
+    while (part.colorChoices.length < widest) part.colorChoices.push('#FFFFFF')
+  }
+
+  if (short) {
+    issues.push({
+      level: 'warning',
+      message: `${short} part(s) declared fewer colours than the rest and were padded to ${widest}.`,
+    })
+  }
+
+  if (remapped.length) {
+    issues.push({
+      level: 'warning',
+      message:
+        `${remapped.length} part(s) pointed at a different slot than the installed game reports; `
+        + 'their names were used to find the current index.',
+    })
+  }
+
+  return {
+    variant: {
+      name: variantName,
+      overrideBaseSkin: String(field(raw, 'OverrideBaseSkin') ?? 'Cat'),
+      parts,
+    },
+    issues,
+  }
 }
 
 /**
@@ -138,14 +249,16 @@ export function validateVariant(variant: SkinVariant): ValidationIssue[] {
   // Collected per kind rather than per part: a skin with twenty half-finished
   // parts otherwise buries the page in forty near-identical alerts.
   const missingSlot: string[] = []
-  const missingImage: string[] = []
   const badColours: { part: string, hex: string }[] = []
 
+  // A part with no image is not reported here. It is a perfectly good thing to
+  // export — it recolours the base artwork and nothing else — and the part's
+  // own card says so with a badge, which points at the part in question rather
+  // than naming it in a list at the top of the page.
   for (const [imageName, part] of parts) {
     // An imported part can name a slot that no longer exists in the game, which
     // leaves the index at -1: it exports, and then draws nothing.
     if (!part.partName || part.slotIndex < 0) missingSlot.push(imageName)
-    if (!part.hideSlot && !part.image) missingImage.push(imageName)
 
     for (const hex of part.colorChoices) {
       if (!/^#(?:[0-9a-fA-F]{3}){1,2}$/.test(hex)) {
@@ -157,15 +270,6 @@ export function validateVariant(variant: SkinVariant): ValidationIssue[] {
   if (missingSlot.length) {
     const { subject, verb } = listParts(missingSlot)
     issues.push({ level: 'error', message: `${subject} ${verb} no slot assigned.` })
-  }
-
-  if (missingImage.length) {
-    const { subject, verb } = listParts(missingImage)
-    const [pronoun, possessive] = missingImage.length === 1 ? ['it', 'its'] : ['they', 'their']
-    issues.push({
-      level: 'warning',
-      message: `${subject} ${verb} no image, so ${pronoun} will only apply ${possessive} colours.`,
-    })
   }
 
   if (badColours.length === 1) {
