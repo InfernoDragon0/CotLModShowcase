@@ -44,27 +44,9 @@ onMounted(() => onEnter(featureGrid, () => popIn('.feature-card')))
     </HeroSection>
 
     <SectionBlock
-      title="Not out yet"
-      subtitle="MP Steam is an experimental build handed out to testers, not a public release. There is no download link here on purpose."
-    >
-      <div class="flex flex-col gap-4 border-l-4 border-crimson-600 bg-default/70 p-6 text-highlighted">
-        <p>
-          Plenty already works end to end — you can clear a dungeon, fight a boss
-          and run the base together — but plenty is still unsynced, and the mod
-          files are not shared publicly while that is true.
-        </p>
-        <p class="text-sm text-muted">
-          Back up your saves before any test session. Only the host's save is
-          written to, and both players need the same game version and the same
-          mods to connect.
-        </p>
-      </div>
-    </SectionBlock>
-
-    <SectionBlock
       dark
-      title="What already works"
-      subtitle="Everything below is in the 0.1.0 test build."
+      title="Features"
+      subtitle="Experimental build! Back up your saves before testing. Features are subject to change."
     >
       <div
         ref="featureGrid"
@@ -90,7 +72,7 @@ onMounted(() => onEnter(featureGrid, () => popIn('.feature-card')))
     </SectionBlock>
 
     <SectionBlock
-      title="How a session runs"
+      title="How to Play"
       spines
       :spine-seed="31"
     >
@@ -127,8 +109,8 @@ onMounted(() => onEnter(featureGrid, () => popIn('.feature-card')))
 
     <SectionBlock
       dark
-      title="What you need"
-      subtitle="Both machines have to match before the lobby will let you in."
+      title="Requirements"
+      subtitle="Mods on both machines have to match before the lobby will let you in."
     >
       <div class="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
         <ul class="flex flex-col gap-3">

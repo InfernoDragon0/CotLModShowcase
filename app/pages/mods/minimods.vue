@@ -37,7 +37,7 @@ onMounted(() => popIn('.minimod-card'))
       image="/images/cotlminimodsbanner.png"
       eyebrow="CotL MiniMods 1.3.3"
       title="Trial of the Gods"
-      subtitle="Twenty custom structures, eight rituals, eight follower roles, and a difficulty system you dial in yourself."
+      subtitle="Lots of custom things including structures, rituals, follower commands, and trial of the gods."
       :foreground="mod.logo"
     >
       <template #actions>
@@ -55,7 +55,7 @@ onMounted(() => popIn('.minimod-card'))
     </HeroSection>
 
     <SectionBlock
-      title="What it adds"
+      title="Features"
       subtitle="Pick a category to browse everything MiniMods brings to your cult."
     >
       <UTabs

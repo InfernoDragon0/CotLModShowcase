@@ -94,13 +94,13 @@ onMounted(() => onEnter(cardGrid, () => popIn('.tarot-card')))
           to="https://www.nexusmods.com/cultofthelamb/mods/20"
           icon="i-lucide-download"
         >
-          Tarots on NexusMods
+          SC Tarots on NexusMods
         </RibbonButton>
         <RibbonButton
-          to="https://thunderstore.io/c/cult-of-the-lamb/p/InfernoDragon0/Supercharged_Tarots_UA/"
+          to="https://www.nexusmods.com/cultofthelamb/mods/29"
           icon="i-lucide-package"
         >
-          Unholy Alliance on Thunderstore
+          SC Unholy Alliance on NexusMods
         </RibbonButton>
         <RibbonButton
           to="/docs/supercharged/tarots"
@@ -115,7 +115,7 @@ onMounted(() => onEnter(cardGrid, () => popIn('.tarot-card')))
       id="followers"
       dark
       title="Supercharged Followers"
-      subtitle="Rally your flock into the dungeon. Equip them, class them, and push them through ten prestige ranks."
+      subtitle="Rally your followers into the dungeon. Equip them, class them, and push them through prestige ranks."
       spines
       :spine-seed="31"
     >
@@ -165,10 +165,10 @@ onMounted(() => onEnter(cardGrid, () => popIn('.tarot-card')))
 
       <div class="mt-10 flex flex-wrap gap-4">
         <RibbonButton
-          to="https://thunderstore.io/c/cult-of-the-lamb/p/InfernoDragon0/SuperchargedFollowers/"
+          to="https://www.nexusmods.com/cultofthelamb/mods/21"
           icon="i-lucide-package"
         >
-          Followers on Thunderstore
+          SC Followers on NexusMods
         </RibbonButton>
         <RibbonButton
           to="/docs/supercharged/followers"

@@ -27,7 +27,7 @@ export const minimodGroups: MiniModGroup[] = [
     key: 'structures',
     label: 'Structures',
     icon: '/images/customstruct.png',
-    blurb: 'Twenty buildings that automate the busywork of running a cult, from mines to remote follower management.',
+    blurb: 'Structures for automation, from AIO mines to remote follower management.',
     entries: [
       {
         title: 'Infernal Infuser',
@@ -246,7 +246,7 @@ export const minimodGroups: MiniModGroup[] = [
     key: 'rituals',
     label: 'Rituals',
     icon: '/images/customrituals.png',
-    blurb: 'Eight additions to the temple ritual menu.',
+    blurb: 'More custom temple ritual options.',
     entries: [
       {
         title: 'Mass Resurrection',

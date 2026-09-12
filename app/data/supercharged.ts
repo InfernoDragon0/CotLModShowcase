@@ -25,8 +25,8 @@ export interface TarotSet {
 export const tarotSets: TarotSet[] = [
   {
     key: 'set-1',
-    label: 'Set 1 — Ten Powerful Tarot Cards',
-    blurb: 'The original set. Each card pushes one part of the Lamb far past its normal ceiling.',
+    label: 'Set 1: Powerful Tarot Cards',
+    blurb: 'The original set. Empowered cards for your taking.',
     cards: [
       { name: 'Shadow Quiver', description: 'Near infinite curse casting.', image: '/images/tarot_arrow.png' },
       { name: 'Deadeye', description: 'Every hit is a critical hit.', image: '/images/tarot_true.png' },
@@ -51,8 +51,8 @@ export const tarotSets: TarotSet[] = [
   },
   {
     key: 'set-2',
-    label: 'Set 2 — Guns Blazing',
-    blurb: 'A blunderbuss build in four cards. The Gunslinger can be removed from the pool in the mod config.',
+    label: 'Set 2: Guns Blazing',
+    blurb: 'Blunderbuss based cards. The Gunslinger can be removed from the pool in the mod config.',
     cards: [
       { name: 'The Gunslinger', description: 'Every weapon choice becomes a blunderbuss.', image: '/images/tarot_attack.png' },
       { name: 'Multishot', description: 'Blunderbuss attacks fire in all four directions.', image: '/images/tarot_arrow.png' },
@@ -62,9 +62,9 @@ export const tarotSets: TarotSet[] = [
   },
   {
     key: 'set-3',
-    label: 'Set 3 — Unholy Alliance',
+    label: 'Set 3: Unholy Alliance',
     blurb:
-      'Ten cards built around the Unholy Alliance co-op update: four for solo runs and six that only pay off with a second player. Card art by LiteLikesArt.',
+      'Empowered cards for the co-op update. Card art by LiteLikesArt.',
     art: 'card',
     cards: [
       {
@@ -126,7 +126,7 @@ export const tarotSets: TarotSet[] = [
         name: 'Death Contract',
         tag: 'Co-op',
         description:
-          'Damage taken to red hearts is transferred to the other player as blue-heart damage.',
+          'Damage taken to red hearts is transferred to the other player as blue-hearts.',
         image: '/images/tarots-ua/tarot_deathcontract.png',
       },
     ],

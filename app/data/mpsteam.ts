@@ -14,70 +14,70 @@ export interface MpFeature {
 
 export const features: MpFeature[] = [
   {
-    title: 'Steam peer-to-peer',
+    title: 'Steam p2p',
     icon: 'i-simple-icons-steam',
     description:
-      'No dedicated server and nothing to port forward. The host opens the lobby from the pause menu and invites a Steam friend, or a friend joins straight from the friends list.',
+      'Only available via Steam! The host opens the lobby after entering the base. Join via Steam overlay or Discord invites.',
   },
   {
-    title: 'One save, no risk',
+    title: 'Host Based Save Data',
     icon: 'i-lucide-save',
     description:
-      'The session runs on the host\'s save, streamed to the guest in memory. The guest\'s own saves are never written to.',
+      'Session runs on Host Data, streamed to the guest.',
   },
   {
-    title: 'A camera each',
+    title: 'Separate Cameras',
     icon: 'i-lucide-users',
     description:
-      'Both players get their own camera and HUD, with health, hearts and curses tracked separately. The guest plays as the vanilla goat.',
+      'Both players get their own camera and can move around freely.',
   },
   {
     title: 'Dungeons together',
     icon: 'i-lucide-swords',
     description:
-      'Room seeds, enemies, damage, knock-outs and revives are replicated. Rewards are instanced, so weapons, curses, relics and tarot cards can be taken by both of you.',
+      'Room seeds, enemies, damage, knock-outs and revives are replicated. Rewards are instanced, so weapons, curses, relics and tarot cards can be taken by both players.',
   },
   {
     title: 'Boss fights',
     icon: 'i-lucide-skull',
     description:
-      'The statue door cutscene, boss intro, summoned enemies, the boss health bar and the victory screen all reach the guest.',
+      'Mostly synced, boss health bars, boss cutscene intros, rewards.',
   },
   {
-    title: 'Run the cult together',
+    title: 'Base Building Together',
     icon: 'i-lucide-home',
     description:
-      'Structures, hammering progress, follower commands, indoctrination, work orders and altar rituals replicate — including the follower picked for a sacrifice or a wedding.',
+      'Structures, progress, follower commands, indoctrination, work orders and rituals replicate.',
   },
   {
     title: 'Shared inventory',
     icon: 'i-lucide-package-open',
     description:
-      'The cult\'s stock is streamed from the host and shown to both players. Buildings the guest places are paid from it, and a placement the host cannot afford is taken back.',
+      'Base Building Inventory items are shared between players, from the Host.',
   },
   {
     title: 'Chat and pings',
     icon: 'i-lucide-message-circle',
     description:
-      'Press Enter to chat with Steam avatars and lobby events, and middle-click to drop a world ping that both players see.',
+      'Press Enter to chat, and middle-click to ping in the world.',
   },
   {
     title: 'Mod parity checks',
     icon: 'i-lucide-shield-check',
     description:
-      'The handshake compares the protocol, the mod build and every installed plugin by file hash, and refuses to start on a mismatched game version with a message saying why.',
+      'Mod build and installed plugins must match on both machines.',
   },
   {
-    title: 'CultTweaker aware',
+    title: 'CultTweaker & COTL_API Compatible',
     icon: 'i-lucide-wand',
     description:
-      'Custom skins follow all session long, COTL_API content ids are remapped between machines, and the host\'s CultTweaker content can be downloaded on join after a consent prompt.',
+      'Custom content from CultTweaker and COTL_API content ids are remapped between machines, and the host\'s CultTweaker content can be downloaded on join after a consent prompt.',
   },
   {
     title: 'Co-op world editing',
     icon: 'i-lucide-pencil-ruler',
     description:
-      'CultTweaker\'s F4 room editor works over the link: the world freezes for both of you, edits appear live, the peer\'s selection is drawn in amber, and the host saves and ships the file.',
+      'CultTweaker\'s F4 room editor works online: live edits shared between players. Saving will update both host and guest map files.',
   },
   {
     title: 'Discord presence',
@@ -98,10 +98,8 @@ export const howItRuns: MpStep[] = [
     role: 'Host',
     icon: 'i-lucide-crown',
     steps: [
-      'Load the save you want to play.',
-      'Open the pause menu and pick Host Multiplayer.',
+      'Load the save. Open the pause menu and pick Host Multiplayer.',
       'Invite a friend from the Steam overlay, the friends list or Discord.',
-      'Everything is authoritative on your machine, and your save is the one that keeps the progress.',
     ],
   },
   {
@@ -109,16 +107,14 @@ export const howItRuns: MpStep[] = [
     icon: 'i-lucide-user-plus',
     steps: [
       'Accept the invite, or join from the Steam friends list.',
-      'The host\'s world is streamed to you; your own saves stay untouched.',
-      'Play with your own camera and HUD, take your own rewards, and build from the shared stock.',
-      'Enter opens chat, middle mouse drops a ping.',
+      'Alternatively, join via Discord Invites.',
     ],
   },
 ]
 
 export const requirements: string[] = [
-  'Cult of the Lamb on Steam, same game version on both machines.',
+  'Cult of the Lamb on Steam, > 1.5.26, same game version on both machines.',
   'BepInEx 5.4.21 and COTL_API.',
-  'The same mods on both sides — the handshake checks every plugin by file hash.',
-  'Discord running, if you want Invite to Play and Ask to Join.',
+  'The same mods on both sides.',
+  '(Optional) Discord running, if you want Invite to Play and Ask to Join.',
 ]
