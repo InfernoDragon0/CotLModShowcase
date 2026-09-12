@@ -24,7 +24,6 @@
     "animejs": "^4.5.0",
     "docus": "^5.13.0",
     "idb-keyval": "^6.3.0",
-    "jszip": "^3.10.1",
-    "vue-advanced-cropper": "^2.8.9"
+    "jszip": "^3.10.1"
   }
 }

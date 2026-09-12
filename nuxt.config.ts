@@ -14,6 +14,20 @@ export default defineNuxtConfig({
    */
   modules: ['@vercel/speed-insights/nuxt'],
 
+  vite: {
+    /**
+     * Both are imported only by `/builder`, which Vite reaches through the
+     * virtual routes module, so its startup dependency scan misses them. The
+     * first visit to the page discovers them, re-optimises, and forces a full
+     * reload - and because the router has not committed `/builder` yet, that
+     * reload lands back on whichever page you came from. Naming them here gets
+     * them pre-bundled at boot instead.
+     */
+    optimizeDeps: {
+      include: ['jszip', 'idb-keyval'],
+    },
+  },
+
   components: [
     // Themed primitives are used everywhere; keep their names short.
     { path: '~/components/cotl', pathPrefix: false },
