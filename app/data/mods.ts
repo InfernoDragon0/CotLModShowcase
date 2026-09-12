@@ -91,7 +91,7 @@ export const mods: Mod[] = [
     name: 'Supercharged Series',
     tagline: 'Unleash the true potential of the Lamb.',
     description:
-      'Supercharged Tarots adds wildly powerful tarot cards to the run pool, across three sets including the Unholy Alliance co-op cards. Supercharged Followers lets you rally your flock into battle, equip them, and level them through ten prestige ranks.',
+      'Supercharged Tarots adds powerful tarot cards to the game, with 3 sets including co-op cards. Supercharged Followers lets you rally your followers into battle, equip them, and level them through prestige ranks.',
     logo: '/images/tarotlogo.png',
     hero: '/images/tarots.png',
     version: 'Tarots 1.0.4 · Unholy Alliance 1.0.1 · Followers 1.0.5',
@@ -100,22 +100,32 @@ export const mods: Mod[] = [
     page: '/mods/supercharged',
     links: [
       {
-        label: 'Tarots on NexusMods',
+        label: 'SC Tarots on NexusMods',
         to: 'https://www.nexusmods.com/cultofthelamb/mods/20',
         icon: 'i-lucide-download',
       },
       {
-        label: 'Tarots on Thunderstore',
+        label: 'SC Tarots on Thunderstore',
         to: 'https://thunderstore.io/c/cult-of-the-lamb/p/InfernoDragon0/Supercharged_Tarots/',
         icon: 'i-lucide-package',
       },
       {
-        label: 'Unholy Alliance on Thunderstore',
+        label: 'SC Tarots: UA on NexusMods',
+        to: 'https://www.nexusmods.com/cultofthelamb/mods/29',
+        icon: 'i-lucide-package',
+      },
+      {
+        label: 'SC Tarots: UA on Thunderstore',
         to: 'https://thunderstore.io/c/cult-of-the-lamb/p/InfernoDragon0/Supercharged_Tarots_UA/',
         icon: 'i-lucide-package',
       },
       {
-        label: 'Followers on Thunderstore',
+        label: 'SC Followers on NexusMods',
+        to: 'https://www.nexusmods.com/cultofthelamb/mods/21',
+        icon: 'i-lucide-package',
+      },
+      {
+        label: 'SC Followers on Thunderstore',
         to: 'https://thunderstore.io/c/cult-of-the-lamb/p/InfernoDragon0/SuperchargedFollowers/',
         icon: 'i-lucide-package',
       },
@@ -140,7 +150,7 @@ export const mods: Mod[] = [
     name: 'CotL MiniMods',
     tagline: 'Custom stuff for base management and combat.',
     description:
-      'Twenty custom structures, new follower roles, new rituals, follower commands and the Trial of the Gods difficulty system that turns every run into a challenge of your own design.',
+      'Lots of custom structures, follower roles, rituals, follower commands and the Trial of the Gods that turns every run into a challenge of your choice.',
     logo: '/images/minimods/icon.png',
     hero: '/images/minimods/showcase-3.jpeg',
     version: '1.3.3',
@@ -179,7 +189,7 @@ export const mods: Mod[] = [
     name: 'COTL MP Steam',
     tagline: 'Two lambs, one cult.',
     description:
-      'Online two-player co-op over Steam peer-to-peer. Host on your own save, invite a friend from the Steam overlay or Discord, and run dungeons, bosses and build a base together with your friends online.',
+      'Online 2 player co-op over Steam p2p. Invite a friend through Steam overlay or Discord, and run dungeons, bosses and build a base together with your friends.',
     logo: '/images/mpsteam/icon.png',
     version: '0.1.0 test build',
     gameVersion: 'Woolhaven',

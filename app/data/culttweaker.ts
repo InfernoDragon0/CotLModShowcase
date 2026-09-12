@@ -17,21 +17,21 @@ export const features: Feature[] = [
   {
     title: 'The Worldshaper',
     description:
-      'An in-game editor on F4 with sixteen tools, a layers panel, multi-select, groups, undo and a whiteboard. Build rooms, dungeons and hubs while the game runs.',
+      'An in-game editor on F4 with lots of tools to shape the world into your own. Build rooms, levels, dungeons and hubs directly in game with live previews.',
     icon: 'i-lucide-hammer',
     to: '/docs/culttweaker/worldshaper',
   },
   {
     title: 'Custom dungeons',
     description:
-      'Turn node blueprints into level blueprints into fully playable dungeons, complete with their own dungeon maps and doors.',
+      'Turn node blueprints into level blueprints into fully playable dungeons, complete with their own dungeon maps.',
     icon: 'i-lucide-door-open',
     to: '/docs/culttweaker/worldshaper',
   },
   {
     title: 'Base, hubs and world maps',
     description:
-      'Edit the real town, build new hubs with the build totem, and draw whole overworlds with nodes, links, unlocks and per-save progress.',
+      'Edit your base without limits, build new hubs, and draw whole new overworld maps with nodes, links, unlocks and per-save progress.',
     icon: 'i-lucide-map',
     to: '/docs/culttweaker/worldshaper',
   },
@@ -46,7 +46,7 @@ export const features: Feature[] = [
   {
     title: 'Follower forms and skins',
     description:
-      'Build custom follower forms from separate sprites with per-part scale, rotation, offset and colour sets. The F8 editor hot-reloads changes as you work.',
+      'Build custom follower forms from separate sprites with per-part scale, rotation, offset and color sets. Enter the editor via F8, and hot-reloads changes as you work.',
     icon: 'i-lucide-users',
     image: '/images/culttweaker/customfollowerform.png',
     to: '/docs/culttweaker/follower-forms',
@@ -54,28 +54,28 @@ export const features: Feature[] = [
   {
     title: 'Custom weapons',
     description:
-      'Declare weapons in a player spine config: base type, combo animations, damage, hitboxes, lunges and chain-weapon hook patterns.',
+      'Custom weapons in a player spine config: base type, combo animations, damage, hitboxes, lunges and chain-weapon hook patterns.',
     icon: 'i-lucide-sword',
     to: '/docs/culttweaker/custom-weapons',
   },
   {
     title: 'NPCs with dialogue and quests',
     description:
-      'Custom NPCs with branching dialogue, nine goal types, rewards and quest state that lives outside the game save.',
+      'Custom NPCs with branching dialogue, vanilla goal types, rewards and quest state.',
     icon: 'i-lucide-message-square',
     to: '/docs/culttweaker/custom-npc-quests',
   },
   {
     title: 'Custom enemies',
     description:
-      'Mimic any vanilla enemy AI, then tune health, scale, speed, attack ranges and boss health bars by name.',
+      'Mimic any vanilla enemy AI, with custom health, scale, speed, attack ranges and boss health bars.',
     icon: 'i-lucide-skull',
     to: '/docs/culttweaker/custom-enemies',
   },
   {
     title: 'Structures, items, meals and tarots',
     description:
-      'Add sprite or Spine structures, override vanilla building art, and register custom inventory items, meals with recipes, and tarot cards.',
+      'Add sprite or Spine structures, override vanilla building art, and add custom inventory items, meals with recipes, and tarot cards without code.',
     icon: 'i-lucide-package',
     image: '/images/culttweaker/structure-override.png',
     to: '/docs/culttweaker/custom-structures',
@@ -83,14 +83,14 @@ export const features: Feature[] = [
   {
     title: 'Editing together',
     description:
-      'Co-edit a map over COTL MP Steam with shared pause, object locking, live drags, per-player selection colours and a resync button.',
+      'COTL MP Steam enables collaborative editing via map editor.',
     icon: 'i-lucide-users-round',
     to: '/docs/culttweaker/changelog',
   },
   {
     title: 'Menu editor',
     description:
-      'Customise the title screen from the main menu itself and save presets under CustomMainMenus.',
+      'Customise the title screen from the main menu itself and save presets.',
     icon: 'i-lucide-layout-dashboard',
     to: '/docs/culttweaker/worldshaper',
   },
@@ -111,12 +111,12 @@ export interface EditorTool {
 
 /** Worldshaper tools, matching the in-game icon set. */
 export const editorTools: EditorTool[] = [
-  { name: 'Select', icon: 'Select.png', description: 'Pick, move and group objects. Shift-click to multi-select, Ctrl+G to group.' },
+  { name: 'Select', icon: 'Select.png', description: 'Pick, move and group objects. Multi-select, grouping features available.' },
   { name: 'Shape', icon: 'Shape.png', description: 'Draw the ground itself using shape profiles such as dirt and grass.' },
   { name: 'Structure', icon: 'Structures.png', description: 'Place vanilla and custom structures.' },
-  { name: 'Enemy', icon: 'Enemies.png', description: 'Place vanilla enemies and anything under Custom (mods).' },
-  { name: 'NPC', icon: 'NPCs.png', description: 'Place custom NPCs and wire up their dialogue.' },
-  { name: 'Podium', icon: 'Podiums.png', description: 'Place reward podiums, including a dropdown for custom weapons.' },
+  { name: 'Enemy', icon: 'Enemies.png', description: 'Place vanilla enemies and custom enemies.' },
+  { name: 'NPC', icon: 'NPCs.png', description: 'Place vanilla NPCs and custom NPCs with custom dialogue.' },
+  { name: 'Podium', icon: 'Podiums.png', description: 'Place weapon/curse podiums, including a dropdown for custom weapons.' },
   { name: 'Trigger', icon: 'Triggers.png', description: 'Camera moves, screen text, cutscenes, lighting and music changes.' },
   { name: 'Door', icon: 'Doors.png', description: 'Connect rooms and set where each exit leads.' },
   { name: 'Whiteboard', icon: 'Whiteboard.png', description: 'Sketch notes and plans directly onto the map.' },
@@ -132,7 +132,7 @@ export const editorTools: EditorTool[] = [
 export const hotkeys = [
   { keys: 'F4', action: 'Open or close the Worldshaper' },
   { keys: 'F5', action: 'Test the dungeon, or reset the room' },
-  { keys: 'F6', action: 'Hide the editor UI, or flip a world map between play and edit' },
+  { keys: 'F6', action: 'Hide the editor UI, for world maps between preview and edit' },
   { keys: 'F7', action: 'Open the CultTweaker panel' },
   { keys: 'F8', action: 'Open the follower skin editor' },
   { keys: 'Ctrl + S', action: 'Quick save' },
@@ -145,9 +145,9 @@ export const hotkeys = [
 ]
 
 export const screenshots = [
-  { src: '/images/culttweaker/1.png', alt: 'A custom player spine standing in a berry field' },
-  { src: '/images/culttweaker/customizer.png', alt: 'The follower customiser interface' },
-  { src: '/images/culttweaker/fleececycler.png', alt: 'Six lamb skins wearing different fleeces' },
-  { src: '/images/culttweaker/structure-override.png', alt: 'A fishing hut before and after a structure override' },
-  { src: '/images/culttweaker/customfollowerform.png', alt: 'A hand-drawn custom follower form' },
+  { src: '/images/culttweaker/1.png', alt: 'Custom Game Menu' },
+  { src: '/images/culttweaker/customizer.png', alt: 'Follower customiser interface' },
+  { src: '/images/culttweaker/fleececycler.png', alt: 'Fleece Transmog between skins' },
+  { src: '/images/culttweaker/structure-override.png', alt: 'Custom Structure Overrides' },
+  { src: '/images/culttweaker/customfollowerform.png', alt: 'Custom Follower Form' },
 ]

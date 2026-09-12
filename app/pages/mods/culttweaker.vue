@@ -47,8 +47,8 @@ const activeShot = ref(0)
     </HeroSection>
 
     <SectionBlock
-      title="Everything in the box"
-      subtitle="CultTweaker started as a Spine loader. It is now a full content toolkit for the game."
+      title="Customize Everything"
+      subtitle="CultTweaker started as a Spine loader. It is now a full modding toolkit for the game."
     >
       <div
         ref="featureGrid"
@@ -129,7 +129,8 @@ const activeShot = ref(0)
     </SectionBlock>
 
     <SectionBlock
-      title="In the game"
+      title="Features"
+      subtitle="Read more about the features in the documentations! These are just a few of the highlights."
       spines
       :spine-seed="23"
     >
@@ -165,7 +166,7 @@ const activeShot = ref(0)
     <SectionBlock
       dark
       title="Get CultTweaker"
-      subtitle="Pre-release builds move fast. Back up your saves and your creations before updating."
+      subtitle="Nexus Mods stable releases, if you want to try out the pre-release, DM @InfernoDragon1 on Discord"
     >
       <div class="flex flex-wrap items-center gap-4">
         <RibbonButton
