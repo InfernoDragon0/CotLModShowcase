@@ -1,0 +1,496 @@
+/**
+ * CotL Mods Showcase — theme tokens and component recipes.
+ *
+ * This is the ONLY place site colours, fonts, radii and the hand-drawn
+ * "Cult of the Lamb" surface treatments are defined. Docus imports this file
+ * after Tailwind + Nuxt UI, so `@theme` here extends their token set.
+ *
+ * Do not import Tailwind here — the Docus CSS module already does, and a
+ * second import would duplicate the whole stylesheet.
+ */
+
+/* Tailwind 4 auto-detects sources next to the CSS entry, but our entry is a
+   generated file in .nuxt, so point it at the real app tree explicitly. */
+@source "../app";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Ribbon / accent red. The game site's #e5202a is fully saturated and glares
+     against a dark ground, so this is the same hue pulled back to roughly 60%
+     saturation: still unmistakably the brand red, easier to sit in front of. */
+  --color-crimson-50: #fdf4f4;
+  --color-crimson-100: #fae4e5;
+  --color-crimson-200: #f4c6c9;
+  --color-crimson-300: #e99fa4;
+  --color-crimson-400: #dd7176;
+  --color-crimson-500: #d3454c;
+  --color-crimson-600: #b93940;
+  --color-crimson-700: #973035;
+  --color-crimson-800: #78272b;
+  --color-crimson-900: #5a1f22;
+  --color-crimson-950: #331214;
+
+  /* Cream used for body copy, the search pill and torn-paper frames. */
+  --color-parchment-50: #fdfaf3;
+  --color-parchment-100: #f7f0e1;
+  --color-parchment-200: #f3ead7;
+  --color-parchment-300: #e8dcc0;
+  --color-parchment-400: #d8c9a6;
+  --color-parchment-500: #c4b184;
+  --color-parchment-600: #a8946a;
+  --color-parchment-700: #8a7856;
+  --color-parchment-800: #6b5c45;
+  --color-parchment-900: #4d4232;
+  --color-parchment-950: #2b2519;
+
+  /* Warm dark greys for the nav bar, the documentation ground and the section
+     bands. Deliberately well off pure black: cream text on near-black glares,
+     and the documentation pages are one long wall of it. */
+  --color-charcoal-50: #f6f5f4;
+  --color-charcoal-100: #e7e5e3;
+  --color-charcoal-200: #cbc7c4;
+  --color-charcoal-300: #a9a3a0;
+  --color-charcoal-400: #8b8481;
+  --color-charcoal-500: #6d6663;
+  --color-charcoal-600: #5c5552;
+  --color-charcoal-700: #4a4441;
+  --color-charcoal-800: #3a3533;
+  --color-charcoal-900: #2e2a29;
+  --color-charcoal-950: #232020;
+
+  /* Small metallic accents (badges, dividers). Full scale so Nuxt UI can
+     alias it as a colour. */
+  --color-gold-50: #fdf9ec;
+  --color-gold-100: #faf0cf;
+  --color-gold-200: #f5e2a4;
+  --color-gold-300: #f0d27c;
+  --color-gold-400: #e6c15a;
+  --color-gold-500: #d4a83a;
+  --color-gold-600: #b58a26;
+  --color-gold-700: #8e6a1d;
+  --color-gold-800: #6b4f18;
+  --color-gold-900: #4a3611;
+  --color-gold-950: #291d09;
+
+  /* Note and tip callouts, and the success/info toasts. Nuxt UI defaults these
+     to Tailwind blue and green, which are cold, fully saturated, and sit badly
+     against the warm greys here. Same roles, same readability, pulled to the
+     saturation the rest of the palette runs at. */
+  --color-mist-50: #f2f5f7;
+  --color-mist-100: #e1e8ec;
+  --color-mist-200: #c5d3da;
+  --color-mist-300: #a1b7c2;
+  --color-mist-400: #7b98a6;
+  --color-mist-500: #5e7c8b;
+  --color-mist-600: #4c6672;
+  --color-mist-700: #3d525c;
+  --color-mist-800: #2f3f47;
+  --color-mist-900: #223037;
+  --color-mist-950: #131c21;
+
+  --color-sage-50: #f5f7f1;
+  --color-sage-100: #e7ecdf;
+  --color-sage-200: #cfdac0;
+  --color-sage-300: #b0c199;
+  --color-sage-400: #90a675;
+  --color-sage-500: #748a59;
+  --color-sage-600: #5d7047;
+  --color-sage-700: #485739;
+  --color-sage-800: #37422c;
+  --color-sage-900: #262e1f;
+  --color-sage-950: #151a11;
+
+  /* Documentation body copy in dark mode. The warm cream is right for short
+     blocks but reads as glare down a page of prose, so the running text drops
+     to a neutral grey and headings keep the cream for hierarchy. */
+  --color-docsbody: #b6b6b6;
+  /* Headings sit a touch warmer and lighter than the body grey, which keeps the
+     hierarchy without going back to full cream. */
+  --color-docshead: #c6c0b3;
+
+  --radius-cotl: 0.5rem;
+}
+
+/**
+ * Nuxt UI design-token overrides, one set per colour mode.
+ *
+ * Nuxt UI puts its own defaults in `@layer theme` under `.light, :root` and
+ * `.dark`; these rules are unlayered, so they win in both. `:root.dark` is
+ * listed after the light block and is more specific, so the dark values only
+ * apply when the mode class is on <html>.
+ *
+ * The `--cotl-*` variables below are the surfaces the recipes in this file
+ * paint with. Keeping them here is what makes one light/dark switch enough.
+ */
+:root,
+.light {
+  --ui-bg: var(--color-parchment-50);
+  --ui-bg-muted: var(--color-parchment-100);
+  --ui-bg-elevated: var(--color-parchment-200);
+  --ui-bg-accented: var(--color-parchment-300);
+  --ui-text: var(--color-charcoal-800);
+  --ui-text-highlighted: var(--color-charcoal-950);
+  --ui-text-muted: var(--color-charcoal-600);
+  --ui-text-dimmed: var(--color-charcoal-500);
+  --ui-border: color-mix(in oklab, var(--color-charcoal-700) 18%, transparent);
+  --ui-border-muted: color-mix(in oklab, var(--color-charcoal-700) 12%, transparent);
+  --ui-border-accented: color-mix(in oklab, var(--color-charcoal-700) 28%, transparent);
+  --ui-radius: var(--radius-cotl);
+
+  /* Paper-coloured bands, a shade apart so alternating sections still read. */
+  --cotl-ground: var(--color-parchment-100);
+  --cotl-ground-dark: var(--color-parchment-200);
+  --cotl-grain: 0.045;
+  --cotl-panel-bg: var(--color-parchment-50);
+  --cotl-pill-bg: #fff;
+  --cotl-pill-text: var(--color-charcoal-900);
+  --cotl-splat: rgb(255 255 255 / 0.7);
+  --cotl-shadow: rgb(80 60 40 / 0.28);
+  --cotl-scroll-track: var(--color-parchment-200);
+}
+
+:root.dark {
+  /* The documentation sits on --ui-bg for whole pages at a time, so it takes
+     the lighter 900 rather than the darkest step. */
+  --ui-bg: var(--color-charcoal-900);
+  --ui-bg-muted: var(--color-charcoal-950);
+  --ui-bg-elevated: var(--color-charcoal-800);
+  --ui-bg-accented: var(--color-charcoal-700);
+  /* One step down from the top of the parchment scale: full-strength cream
+     on the dark ground reads as glare rather than contrast. */
+  --ui-text: var(--color-parchment-300);
+  --ui-text-highlighted: var(--color-parchment-100);
+  --ui-text-muted: var(--color-parchment-500);
+  --ui-text-dimmed: var(--color-parchment-600);
+  --ui-border: color-mix(in oklab, var(--color-parchment-200) 16%, transparent);
+  --ui-border-muted: color-mix(in oklab, var(--color-parchment-200) 10%, transparent);
+  --ui-border-accented: color-mix(in oklab, var(--color-parchment-200) 24%, transparent);
+
+  /* A step *down* from the page, not up: the hero artwork fades out to roughly
+     charcoal-950, and a lighter band underneath it drew a visible seam across
+     the page. Light mode steps the same distance in the other direction. */
+  --cotl-ground: var(--color-charcoal-950);
+  --cotl-ground-dark: color-mix(in oklab, var(--color-charcoal-950) 78%, black);
+  --cotl-grain: 0.05;
+  --cotl-panel-bg: var(--color-charcoal-950);
+  --cotl-pill-bg: var(--color-parchment-200);
+  --cotl-pill-text: var(--color-charcoal-900);
+  --cotl-splat: rgb(0 0 0 / 0.38);
+  --cotl-shadow: rgb(0 0 0 / 0.55);
+  --cotl-scroll-track: var(--color-charcoal-950);
+}
+
+html,
+body {
+  background-color: var(--ui-bg);
+  color: var(--ui-text);
+  /* Declared literally, not just as the --font-sans token: Nuxt Fonts scans
+     for `font-family` declarations to decide which faces to self-host. */
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Scrollbar — thin red rail, matching the one on the game site.
+   --------------------------------------------------------------------------- */
+html {
+  scrollbar-color: var(--color-crimson-700) var(--cotl-scroll-track);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cotl-scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-crimson-700);
+  border: 2px solid var(--cotl-scroll-track);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-crimson-600);
+}
+
+/* ---------------------------------------------------------------------------
+   Surfaces
+   --------------------------------------------------------------------------- */
+
+/* Section ground with a faint paper grain. Charcoal in dark, paper in light. */
+.cotl-ground {
+  background-color: var(--cotl-ground);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+.cotl-ground-dark {
+  background-color: var(--cotl-ground-dark);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* Section edges.
+ *
+ * Pair these with `.cotl-ground-dark` on a strip at the top or bottom of a
+ * band: the strip carries the page's own ground, grain included, and is masked
+ * away towards the middle of the section. One band then hands over to the next
+ * on exactly the colour the page is already painted in, with no line where the
+ * artwork stops. Matching the ground by hand instead would miss the grain,
+ * which is worth about three levels of brightness on its own. */
+.cotl-seam-top,
+.cotl-seam-bottom {
+  pointer-events: none;
+}
+
+.cotl-seam-top {
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+}
+
+.cotl-seam-bottom {
+  -webkit-mask-image: linear-gradient(to top, #000, transparent);
+  mask-image: linear-gradient(to top, #000, transparent);
+}
+
+/* Artwork edges.
+ *
+ * The strips above settle the *colour* at a boundary, but a band still ends on
+ * a line if its artwork is still legible when it gets there: detail, then
+ * nothing, reads as an edge even when the average brightness matches on both
+ * sides. These dissolve the art itself over a long, eased run - stated in
+ * percentages, so it scales with however tall the band turns out to be - and
+ * the extra stops keep the falloff from starting with a visible kink.
+ *
+ * Put them on a wrapper that is not itself transformed: a mask is applied in
+ * the element's own box, so a scaled layer would carry its soft edges off
+ * past the ends of the section. */
+.cotl-art-fade-y {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%, rgba(0, 0, 0, 0.06) 9%, rgba(0, 0, 0, 0.3) 18%,
+    rgba(0, 0, 0, 0.78) 30%, #000 40%, #000 60%, rgba(0, 0, 0, 0.78) 70%,
+    rgba(0, 0, 0, 0.3) 82%, rgba(0, 0, 0, 0.06) 91%, transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%, rgba(0, 0, 0, 0.06) 9%, rgba(0, 0, 0, 0.3) 18%,
+    rgba(0, 0, 0, 0.78) 30%, #000 40%, #000 60%, rgba(0, 0, 0, 0.78) 70%,
+    rgba(0, 0, 0, 0.3) 82%, rgba(0, 0, 0, 0.06) 91%, transparent 100%
+  );
+}
+
+/* The hero only needs its foot dissolved: its head sits under the header. */
+.cotl-art-fade-b {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%, #000 62%, rgba(0, 0, 0, 0.82) 74%,
+    rgba(0, 0, 0, 0.42) 85%, rgba(0, 0, 0, 0.1) 94%, transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%, #000 62%, rgba(0, 0, 0, 0.82) 74%,
+    rgba(0, 0, 0, 0.42) 85%, rgba(0, 0, 0, 0.1) 94%, transparent 100%
+  );
+}
+
+/* Recessed panel with a heavy red border, as used for the trailer player. */
+.cotl-panel {
+  background: var(--cotl-panel-bg);
+  border: 10px solid var(--color-crimson-600);
+  box-shadow:
+    inset 0 0 0 2px var(--color-crimson-900),
+    0 18px 40px -12px var(--cotl-shadow);
+}
+
+/* ---------------------------------------------------------------------------
+   Ribbon button — red banner with notched ends and a darker bottom ledge.
+   Usage: <a class="cotl-ribbon">…</a>
+   --------------------------------------------------------------------------- */
+.cotl-ribbon {
+  --ribbon-notch: 0.75rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  /* Cream on the red, with a soft dark shadow so it stays readable on the
+     lighter part of the ribbon. */
+  color: var(--color-parchment-50);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+  background: var(--color-crimson-500);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--ribbon-notch)) 50%,
+    100% 100%,
+    0 100%,
+    var(--ribbon-notch) 50%
+  );
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.cotl-ribbon::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: var(--color-crimson-700);
+}
+
+.cotl-ribbon:hover {
+  background: var(--color-crimson-400);
+  transform: translateY(-1px);
+}
+
+.cotl-ribbon:active {
+  transform: translateY(0);
+}
+
+/* Flat-left variant for ribbons that sit flush against the viewport edge. */
+.cotl-ribbon-start {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    calc(100% - var(--ribbon-notch)) 50%,
+    100% 100%,
+    0 100%
+  );
+}
+
+/* Secondary action. The game site keeps these as a plain text link rather than
+   an outlined ribbon, and an inset ring would be cut off by the notches anyway. */
+.cotl-ribbon-ghost {
+  color: var(--ui-text-highlighted);
+  background: transparent;
+  clip-path: none;
+  border-bottom: 2px solid var(--ui-border-accented);
+  padding-inline: 0.5rem;
+}
+
+.cotl-ribbon-ghost::after {
+  display: none;
+}
+
+.cotl-ribbon-ghost:hover {
+  color: var(--color-crimson-400);
+  background: transparent;
+  border-bottom-color: var(--color-crimson-500);
+}
+
+/* ---------------------------------------------------------------------------
+   Hero copy set straight onto the key art. The scrims do most of the work;
+   this shadow covers the bright patches they leave behind.
+
+   The hero keeps its dark treatment in both colour modes: the art behind it is
+   dark, so cream copy is the readable choice either way.
+   --------------------------------------------------------------------------- */
+.cotl-hero-text {
+  color: var(--color-parchment-200);
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.9),
+    0 4px 28px rgb(0 0 0 / 0.75);
+}
+
+.cotl-hero-text .cotl-ribbon-ghost {
+  color: var(--color-parchment-100);
+  border-bottom-color: color-mix(in oklab, var(--color-parchment-200) 45%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   Parchment frame — rough torn-paper border around screenshots.
+   --------------------------------------------------------------------------- */
+.cotl-frame {
+  --frame-tilt: -1deg;
+  padding: 10px;
+  background: var(--color-parchment-200);
+  transform: rotate(var(--frame-tilt));
+  filter: drop-shadow(0 14px 22px var(--cotl-shadow));
+  clip-path: polygon(
+    1% 2%, 8% 0.4%, 17% 1.6%, 26% 0.2%, 35% 1.4%, 44% 0.3%, 53% 1.5%, 62% 0.4%,
+    71% 1.6%, 80% 0.5%, 89% 1.4%, 98% 0.6%, 99.4% 9%, 98.6% 18%, 99.6% 27%,
+    98.8% 36%, 99.5% 45%, 98.7% 54%, 99.6% 63%, 98.8% 72%, 99.4% 81%, 98.6% 90%,
+    99.2% 98%, 91% 99.5%, 82% 98.4%, 73% 99.6%, 64% 98.5%, 55% 99.6%, 46% 98.4%,
+    37% 99.6%, 28% 98.5%, 19% 99.5%, 10% 98.6%, 1.5% 99.3%, 0.5% 91%, 1.3% 82%,
+    0.4% 73%, 1.2% 64%, 0.5% 55%, 1.3% 46%, 0.4% 37%, 1.2% 28%, 0.6% 19%, 1.4% 10%
+  );
+}
+
+.cotl-frame > * {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cotl-frame-flat {
+  --frame-tilt: 0deg;
+}
+
+/* ---------------------------------------------------------------------------
+   Ink splat behind section headings.
+   --------------------------------------------------------------------------- */
+/* Inline-block so the blob hugs the heading text instead of the full column,
+   and no bleed past the bottom edge: the blur used to smudge over the
+   paragraph that follows the heading. */
+.cotl-splat {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+.cotl-splat::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -1.1rem -2.5rem 0;
+  background: var(--cotl-splat);
+  filter: blur(14px);
+  border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
+}
+
+/* ---------------------------------------------------------------------------
+   Search pill in the header, matching the cream "SEARCH THE WIKI" field.
+   --------------------------------------------------------------------------- */
+.cotl-search :is(button, input) {
+  background: var(--cotl-pill-bg);
+  color: var(--cotl-pill-text);
+  border-radius: 999px;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.25);
+}
+
+/* ---------------------------------------------------------------------------
+   Motion helpers. Anime.js drives most motion, but these cover CSS-only cases.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .cotl-ribbon,
+  .cotl-ribbon:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Placeholder for artwork that has not been shot yet. The hatching reads as
+   "nothing here on purpose" rather than as a failed image. */
+.cotl-wireframe {
+  background-color: color-mix(in oklab, var(--color-charcoal-950) 70%, transparent);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 10px,
+    color-mix(in oklab, var(--ui-border) 45%, transparent) 10px 11px
+  );
+  border: 1px dashed var(--ui-border-accented);
+}
+
+/* Scroll stepping on the home page lives in `useSectionStepper`, not in CSS.
+   CSS scroll-snap cannot express "one gesture, one section": `mandatory` snaps
+   to whichever point is *nearest* when the gesture ends, so a single wheel
+   notch springs straight back to where it started. Worse, a snap area taller
+   than the window clamps scrolling inside itself, which left the page unable
+   to reach anything below the MP Steam section. */
