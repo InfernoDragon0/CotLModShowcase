@@ -172,8 +172,11 @@ const numberFields = [
   { key: 'scaleX', label: 'SX', title: 'Scale X', step: '0.05' },
   { key: 'scaleY', label: 'SY', title: 'Scale Y', step: '0.05' },
   { key: 'rotation', label: 'Rot', title: 'Rotation', step: '1' },
-  { key: 'offsetX', label: 'OX', title: 'Offset X', step: '0.5' },
-  { key: 'offsetY', label: 'OY', title: 'Offset Y', step: '0.5' },
+  // An offset is in the game's skeleton space, where the in-game editor's
+  // sliders run -1 to 1 and one unit is 200px of artwork. Real values land
+  // around a tenth, so a coarser step would skip straight past every one.
+  { key: 'offsetX', label: 'OX', title: 'Offset X', step: '0.01' },
+  { key: 'offsetY', label: 'OY', title: 'Offset Y', step: '0.01' },
 ] as const satisfies { key: keyof PartConfig, label: string, title: string, step: string }[]
 
 /**

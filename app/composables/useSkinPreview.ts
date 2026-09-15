@@ -13,6 +13,35 @@ import { loadImage } from '~/utils/skinImages'
 import type { FollowerSlot } from './useFollowerSlots'
 
 /**
+ * Scale the game builds the follower `SkeletonDataAsset` at.
+ *
+ * `SpineFolderLoader.DefaultScale` and `PlayerSpineLoader.SkeletonScale` in the
+ * mod, and what `FollowerWardrobe` reads back off the live asset.
+ */
+export const GAME_SKELETON_SCALE = 0.005
+
+/**
+ * Scale this preview reads `Follower.skel` at.
+ *
+ * `SpinePlayer` never assigns `SkeletonBinary.scale`, so attachment coordinates
+ * here are raw atlas units. Note this is *not* the `BASE_SCALE` in
+ * `useSpineStage`: that composable builds its own skeleton for the marquee and
+ * does set a scale, but the builder preview does not go through it.
+ */
+const PREVIEW_SKELETON_SCALE = 1
+
+/**
+ * Atlas units one config unit of `offsetX`/`offsetY` is worth.
+ *
+ * A config offset is expressed in the game's post-scale skeleton space, so one
+ * unit is 1 / 0.005 = 200 units of artwork. Reading it raw here moved a part by
+ * a fraction of a pixel, which is what made every part sit at its base position.
+ * `scaleX`, `scaleY` and `rotation` need no conversion: they are relative
+ * multipliers, and the loader replaces the placeholder's own scale outright.
+ */
+const OFFSET_UNITS = PREVIEW_SKELETON_SCALE / GAME_SKELETON_SCALE
+
+/**
  * Base skins read off the loaded skeleton, shared with the rest of the page.
  *
  * Empty until the preview has the skeleton in memory, which is what lets the
@@ -339,8 +368,8 @@ export function useSkinPreview(): PreviewHandle {
 
           const attachment = new spine.RegionAttachment(part.partName)
           attachment.setRegion(region)
-          attachment.x = centerY - part.offsetY
-          attachment.y = centerX - part.offsetX
+          attachment.x = centerY - part.offsetY * OFFSET_UNITS
+          attachment.y = centerX - part.offsetX * OFFSET_UNITS
           attachment.rotation = part.rotation
           attachment.scaleX = part.scaleX
           attachment.scaleY = part.scaleY
@@ -353,8 +382,8 @@ export function useSkinPreview(): PreviewHandle {
           const attachment = baseAttachment.copy()
           attachment.name = `${variant.name}_${part.partName}`
           attachment.setRegion(region)
-          attachment.x += part.offsetX
-          attachment.y += part.offsetY
+          attachment.x += part.offsetX * OFFSET_UNITS
+          attachment.y += part.offsetY * OFFSET_UNITS
           attachment.scaleX = part.scaleX
           attachment.scaleY = part.scaleY
           attachment.rotation = part.rotation
